@@ -45,6 +45,12 @@ if (isset($_SESSION['user_id'])) {
 
 ?>
 <main>
+    <script>
+        function toggleImage(container, cardId) {
+            const flipper = document.getElementById('flipper-' + cardId);
+            flipper.classList.toggle('flipped');
+        }
+    </script>
     <h2 class="header-style" >
         <span id="playlistName"><?= htmlspecialchars($playlist['name']) ?></span>
         <?php if ($loggedInUserId == $playlist['user_id']): ?>
