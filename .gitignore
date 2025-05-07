@@ -1,0 +1,51 @@
+# Ignore node modules if you use npm (for frontend tools)
+node_modules/
+
+# Ignore Composer dependencies if used in PHP project
+vendor/
+
+lib/phpqrcode/
+
+# Environment and configuration files
+.env
+.env.*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs and runtime files
+*.log
+*.cache
+*.tmp
+
+# OS-specific
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# PHPStorm specific
+*.iml
+*.ipr
+*.iws
+out/
+
+# Build artifacts (if using tools like Webpack, Parcel, etc.)
+dist/
+build/
+
+# Backup files
+*~
+*.bak
+*.swp
+*.tmp
+
+# PHPUnit test results (if applicable)
+phpunit.xml
+phpunit.result.cache
