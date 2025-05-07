@@ -1,0 +1,24 @@
+# Aktiviert die URL-Umschreibung
+RewriteEngine On
+RewriteBase /
+
+# Ignoriere echte Dateien oder Verzeichnisse (Assets, CSS, JS, Bilder, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Leitet Aufrufe wie /login.php → /login weiter (nur für definierte Frontend-Seiten)
+RewriteCond %{THE_REQUEST} "^[^ ]* /(login|register|profile|index|create_card|edit_card|delete_card|update_card_status|upload_profile_pic|logout|delete_account|update_profile|edit_playlist|playlist_detail|datenschutz|forgot_password|impressum|kontakt|login_code|login_email|play|reset_password|welcome)\.php" [NC]
+RewriteRule ^(.*)\.php$ /$1 [R=301,L]
+
+# Leitet URLs wie /login intern auf /login.php um (ohne Weiterleitung im Browser)
+RewriteRule ^(login|register|profile|index|create_card|edit_card|delete_card|update_card_status|upload_profile_pic|logout|delete_account|update_profile|edit_playlist|playlist_detail|datenschutz|forgot_password|impressum|kontakt|login_code|login_email|play|reset_password|welcome)/?$ $1.php [L]
+
+# Optional: OPTIONS-Methode für CORS-Preflight-Anfragen zulassen
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+</IfModule>
+
+# Standard-Dokument
+DirectoryIndex index.php

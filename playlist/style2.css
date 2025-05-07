@@ -1,0 +1,176 @@
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #141522;
+    position: relative;
+    z-index: 1000;
+}
+
+.burger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+}
+
+.burger span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.nav-mobile {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100%;
+    background: #1c1c2b;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: right 0.4s ease;
+    z-index: 999;
+}
+
+.nav-mobile.active {
+    right: 0;
+}
+
+.nav-mobile .top,
+.nav-mobile .middle,
+.nav-mobile .bottom {
+    padding: 20px;
+}
+
+.nav-mobile .top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.nav-mobile .top img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.nav-mobile a {
+    display: block;
+    margin: 12px 0;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    transition: color 0.2s ease;
+}
+
+.btn-play, .btn-create {
+    border: 2px solid;
+    border-radius: 6px;
+    padding: 10px 15px;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.btn-play {
+    border-color: #ff2bc2;
+    box-shadow: 0 0 8px #ff2bc2;
+    color: white;
+}
+
+.btn-create {
+    border-color: #fffb00;
+    box-shadow: 0 0 8px #fffb00;
+    color: white;
+}
+
+.nav-mobile .bottom a {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.close {
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+@media (max-width: 768px) {
+    .burger {
+        display: flex;
+    }
+
+    .header-center, .profile-desktop {
+        display: none;
+    }
+}
+
+/* Der unsichtbare Hintergrund hinter dem Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* halbtransparent schwarz */
+    display: none; /* versteckt, bis es aktiviert wird */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Das sichtbare Modal-Fenster */
+.modal-content {
+    background: #141522;
+    padding: 20px 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Schließen-Button (oben rechts) */
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 22px;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.modal-close:hover {
+    color: #000;
+}
+
+/* Buttons im Modal */
+.modal-button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 15px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.modal-button:hover {
+    background-color: #0056b3;
+}
+
+/* Einfaches Fade-in-Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
