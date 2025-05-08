@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db   = 'hitster_customs_db';
+$db   = 'guess_the_groove_db';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
