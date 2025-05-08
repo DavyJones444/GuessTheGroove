@@ -20,7 +20,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/style.css">
-    <title><?= $title ?? 'Hitster Custom' ?></title>
+    <title><?= $title ?? 'Guess The Groove' ?></title>
     <link rel="icon" href="https://hitstergame.com/wp-content/uploads/2022/04/cropped-favicon-32x32.png" sizes="32x32">
     <link rel="icon" href="https://hitstergame.com/wp-content/uploads/2022/04/cropped-favicon-192x192.png" sizes="192x192">
 </head>
