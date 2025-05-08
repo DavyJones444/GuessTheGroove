@@ -126,12 +126,12 @@ include 'header.php';
 <body>
 <div class="wrapper">
     <div class="welcome-container">
-        <img src="assets/logo.png" alt="Hitster Customs Logo" class="logo-large">
+        <img src="assets/logo.png" alt="Guess the Groove Logo" class="logo-large">
 
-        <h1>Willkommen bei <span style="color: #7da7ff;">Hitster Customs</span></h1>
+        <h1>Willkommen bei <span style="color: #7da7ff;">Guess the Groove</span></h1>
         <p>
-            Erstelle deine eigene digitale Hitster-Karte, teile deine Lieblingssongs und feiere Musik auf deine Art.
-            Hitster Customs ist deine kreative Erweiterung zum beliebten Musikspiel!
+            Erstelle deine eigene digitale Quiz-Karte, teile deine Lieblingssongs und feiere Musik auf deine Art.
+            Guess the Groove ist deine kreative Erweiterung zum beliebten Musikspiel!
         </p>
         <p>
             Melde dich an und werde Teil unserer Community – individuell, modern und einfach.
@@ -142,6 +142,7 @@ include 'header.php';
         <br><br><br>
 
         <p>
+            Diese Website ist von Hitster inspiriert. <br>
             Willst du mehr über Hitster erfahren? Dann schau auf der offiziellen Webseite vorbei!
         </p>
         <a href="https://hitstergame.com/" class="button" target="_blank">Zur offiziellen Hitster-Seite</a>
