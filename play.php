@@ -95,12 +95,8 @@ if (strpos($songUrl, 'youtube.com') !== false || strpos($songUrl, 'youtu.be') !=
     $service = 'deezer';
 }
 
-/*if ($service === 'spotify' && !$token) {
-    header('Location: spotify_auth.php?url=' . urlencode($songUrl));
-    exit;
-}*/
-
 $title = "Spielen";
+
 include 'header.php';
 ?>
 <!DOCTYPE html>
@@ -212,7 +208,30 @@ include 'header.php';
             </div>
         </div>
 
-        <div id="player-container"></div>
+        <div id="player-container">
+        </div>
+        <div class="div-style" id="spotify-text-div" style="margin-top:20px; display:none;">
+            Der Player nutzt standardmäßig den Experimentellen Modus. <br>
+            Dabei werden Titel und Interpret aus Spotify gelesen und bei Deezer gesucht.<br>
+            Dadurch ist ein Abspielen ohne Titelanzeige möglich.<br>
+            Nutze bei Fehlern den Nicht Experimentellen Modus.
+        </div>
+        <div class="div-style" id="spotify-button-div" style="margin-top:20px; display:none;">
+            <div style="margin-top: 10px;">
+                <button id="experimentalBtn" class="button"
+                >❌ Nicht Experimenteller Modus</button>
+            </div>
+        </div>
+        <div class="div-style" id="spotify-embed-div" style="margin-top:20px; display:none;">
+            <iframe id="spotify-embed" style="border-radius:12px" 
+                    src="" 
+                    width="400px" 
+                    height="100" 
+                    frameborder="0" 
+                    allowtransparency="true" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+            </iframe>
+        </div>
         <div class="div-style">
             <button id="startStopBtn" style="display:none;">▶️ Start</button>
         </div>
@@ -471,11 +490,46 @@ include 'header.php';
         btn.style.display = 'inline-block';
         }
 
-
         if (service === 'spotify') {
-        searchDeezerFromSpotify(songUrl);
+            document.getElementById('spotify-button-div').style.display = 'flex';
+            document.getElementById('spotify-text-div').style.display = 'flex';
+            document.getElementById('spotify-embed-div').style.display = 'flex';
+            document.getElementById('spotify-embed').style.display = 'flex';
+            const match = songUrl.match(/track\/([a-zA-Z0-9]+)/);
+                        if (!match) {
+                            loadingOverlay.style.display = 'none';
+                            alert("Ungültiger Spotify-Link");
+                        }
+                        const trackId = match[1];
+                        document.getElementById('spotify-embed').src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator`;
+            document.getElementById('spotify-embed').style.display = 'none';
+            searchDeezerFromSpotify(songUrl);
         } else if (service === 'youtube') loadYouTube(songUrl);
         else if (service === 'deezer') loadDeezer(songUrl);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('experimentalBtn');
+            const spotifyEmbed = document.getElementById('spotify-embed');
+            const playBtn = document.getElementById('startStopBtn');
+
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    // Wenn der Modus aktiviert ist, verstecke das Embed und ändere die Schaltfläche
+                    if (btn.textContent === "❌ Nicht Experimenteller Modus") {
+                        // Wenn der Button zurückgesetzt wird, zeige das Embed wieder und ändere die Schaltfläche zurück
+                        spotifyEmbed.style.display = 'flex'; // Zeige das Embed wieder
+                        playBtn.style.display = 'none';
+                        btn.textContent = "🔬 Experimenteller Modus (Deezer-Vorschau)"; // Ursprünglicher Buttontext
+                    } else {
+                        spotifyEmbed.style.display = 'none'; // Verstecke das Embed
+                        btn.textContent = "❌ Nicht Experimenteller Modus"; // Ändere den Text des Buttons
+                        playBtn.style.display = 'inline-block';
+                        searchDeezerFromSpotify(songUrl);
+                    }
+                });
+            }
+        });
+
     </script>
 </body>
 </html>
