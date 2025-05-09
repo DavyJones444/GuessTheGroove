@@ -6,6 +6,11 @@ node_modules/
 
 lib/phpqrcode/
 
+cards/images/
+
+uploads/
+
+
 # Environment and configuration files
 .env
 .env.*
