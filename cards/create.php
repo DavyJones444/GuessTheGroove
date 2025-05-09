@@ -43,8 +43,6 @@ include 'header.php';
 
 <!DOCTYPE html>
 <html lang="de">
-    
-<head>
 <body>
     <form method="post" action="../create_card_logic.php" class="form-container" style="max-width: 400px; margin: auto;">
         <h2 class="header-style">Neue Karte erstellen</h2>
@@ -71,24 +69,6 @@ include 'header.php';
     </form>
 
     <script>
-        const burger = document.querySelector('.burger');
-        const navMobile = document.querySelector('.nav-mobile');
-        const closeButton = document.querySelector('.close');
-
-        burger.addEventListener('click', () => {
-            navMobile.classList.toggle('active');
-        });
-
-        closeButton.addEventListener('click', () => {
-            navMobile.classList.remove('active');
-        });
-
-        document.querySelectorAll('.nav-mobile a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMobile.classList.remove('active');
-            });
-        });
-
         async function fetchSongInfo() {
             const link = document.getElementById('songlink').value;
 

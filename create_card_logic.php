@@ -107,9 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $qrOrigWidth = imagesx($qrImage);
     $qrOrigHeight = imagesy($qrImage);
 
-    $scale = 0.5;
-    $qrNewWidth = $qrOrigWidth * $scale;
-    $qrNewHeight = $qrOrigHeight * $scale;
+    $qrNewWidth = 250;
+    $qrNewHeight = 250;
 
     // Skalierte QR-Code-Bilder erzeugen
     $qrScaled = imagecreatetruecolor($qrNewWidth, $qrNewHeight);
