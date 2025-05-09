@@ -124,9 +124,12 @@ include 'header.php';
     </style>
 </head>
 <body>
+<div id="splash-wrapper">
+  <img src="assets/logo.png" alt="Logo" id="splash-logo">
+</div>
 <div class="wrapper">
     <div class="welcome-container">
-        <img src="assets/logo.png" alt="Guess the Groove Logo" class="logo-large">
+        <img src="assets/logo.png" alt="Guess the Groove Logo" class="logo-large" id="logo-large">
 
         <h1>Willkommen bei <span style="color: #7da7ff;">Guess the Groove</span></h1>
         <p>
@@ -152,6 +155,33 @@ include 'header.php';
 </div>
 </body>
 <script>
+    document.body.classList.add("lock-scroll");
+
+    window.addEventListener("wheel", () => {
+    const splashLogo = document.getElementById("splash-logo");
+    const staticLogo = document.getElementById("logo-large");
+
+    const splashRect = splashLogo.getBoundingClientRect();
+    const targetRect = staticLogo.getBoundingClientRect();
+
+    // Differenz berechnen
+    const deltaX = targetRect.left - splashRect.left;
+    const deltaY = targetRect.top - splashRect.top;
+    const scale = targetRect.width / splashRect.width;
+
+    // Transformation setzen
+    splashLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+
+    // Splash langsam ausblenden
+    setTimeout(() => {
+        document.getElementById("splash-wrapper").style.opacity = "0";
+        setTimeout(() => {
+        document.getElementById("splash-wrapper").remove();
+        document.body.classList.remove("lock-scroll");
+        }, 500);
+    }, 800);
+    });
+
     const images = <?= json_encode($publicImages) ?>;
     let index = 0;
     let side = 'left';
