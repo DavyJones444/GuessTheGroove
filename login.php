@@ -2,12 +2,6 @@
 session_start();
 require 'lib/db.php';
 
-// ✅ Weiterleitung, falls schon eingeloggt
-if (isset($_SESSION['user_id'])) {
-    header("Location: welcome");
-    exit;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $password = $_POST['password'];

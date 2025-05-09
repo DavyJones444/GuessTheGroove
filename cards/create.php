@@ -44,7 +44,7 @@ include 'header.php';
 <!DOCTYPE html>
 <html lang="de">
 <body>
-    <form method="post" action="../create_card_logic.php" class="form-container" style="max-width: 400px; margin: auto;">
+    <form method="post" accept-charset="UTF-8" action="../create_card_logic.php" class="form-container" style="max-width: 400px; margin: auto;">
         <h2 class="header-style">Neue Karte erstellen</h2>
         <div style="margin-bottom: 10px;">
             <label for="title">Titel:</label><br>

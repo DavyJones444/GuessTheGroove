@@ -1,6 +1,11 @@
 <?php
-$clientId = '33dfdad9829b4afe88eb33c85cc08f08';
-$clientSecret = 'ba02214b896a46dcb5cd52b216a1903a';
+
+require __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '');
+$dotenv->load();
+
+$clientId = $_ENV['SPOTIFY_CLIENT_ID'];
+$clientSecret = $_ENV['SPOTIFY_CLIENT_SECRET'];
 
 if (!isset($_GET['id'])) {
     http_response_code(400);

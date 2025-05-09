@@ -1,7 +1,11 @@
 <?php
 header('Content-Type: application/json');
 
-$apiKey = 'AIzaSyDjdpeaTfz2oEryx4d9sZnSkVMq-BRlolM';
+require __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '');
+$dotenv->load();
+
+$apiKey = $_ENV['YT_API'];
 $videoId = $_GET['id'] ?? '';
 
 if (!$videoId || !preg_match('/^[a-zA-Z0-9_-]{11}$/', $videoId)) {

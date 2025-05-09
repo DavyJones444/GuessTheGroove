@@ -3,12 +3,6 @@ require 'lib/db.php';
 require 'lib/mailer.php';
 session_start();
 
-// ✅ Weiterleitung, falls schon eingeloggt
-if (isset($_SESSION['user_id'])) {
-    header("Location: welcome");
-    exit;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $name = trim($_POST['name']);
