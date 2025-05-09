@@ -114,7 +114,7 @@ if (isset($_SESSION['user_id'])) {
                 <img src="../assets/icons/delete.svg" alt="Löschen" style="width: 24px; height: 24px;">
             </a>
 
-            <a href="download_playlist.php?id=<?= $playlistId ?>" title="Playlist herunterladen (ZIP)">
+            <a href="../export_playlist.php?id=<?= $playlistId ?>" title="Playlist herunterladen (PDF)">
                 <img src="../assets/icons/download.svg" alt="Download" style="width: 24px; height: 24px;">
             </a>
         </div>
