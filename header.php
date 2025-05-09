@@ -148,7 +148,7 @@ if (isset($_SESSION['user_id'])) {
 
 <header class="header-bar">
     <a href="/welcome">
-        <img src="/assets/logo.png" alt="Logo" style="height: 50px;">
+        <img src="/assets/logo_solo.png" alt="Logo" style="height: 50px;">
     </a>
 
     <!-- Desktop-Buttons -->
