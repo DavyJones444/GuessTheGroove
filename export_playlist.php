@@ -32,7 +32,7 @@ $pdf->SetAutoPageBreak(false);
 $cardWidth = 100;  // in mm
 $cardHeight = 50;  // in mm
 $cardsPerRow = 2;
-$cardsPerColumn = 6;
+$cardsPerColumn = 5;
 $marginX = 5;
 $marginY = 5;
 $spacingX = 0;
