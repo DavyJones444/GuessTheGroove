@@ -66,7 +66,14 @@ include 'header.php';
         <div style="text-align: center;">
             <button type="submit">Erstellen</button>
         </div>
+        <div style="margin-bottom: 10px;">
+            <label for="playlistlink">Playlist-Link (optional):</label><br>
+            <input type="url" name="playlistlink" id="playlistlink" style="width: 100%;">
+            <button type="button" onclick="fetchPlaylistInfo()">🎵 Playlist laden</button>
+        </div>
     </form>
+
+    <div id="track-forms"></div>
 
     <script>
         async function fetchSongInfo() {
@@ -156,6 +163,67 @@ include 'header.php';
                 alert("Ungültiger Link. Bitte einen Deezer-, YouTube- oder Spotify-Link einfügen oder die Daten manuell eintragen.");
             }
         }
+
+        async function fetchPlaylistInfo() {
+            const link = document.getElementById('playlistlink').value;
+            if (!link) return alert("Bitte einen Playlist-Link einfügen.");
+
+            let platform = null, playlistId = null;
+
+            if (link.includes("spotify.com/playlist/")) {
+                platform = "spotify";
+                playlistId = link.match(/playlist\/([a-zA-Z0-9]+)/)[1];
+            } else {
+                alert("Nur Spotify-Playlisten werden derzeit unterstützt.");
+                return;
+            }
+
+            const res = await fetch(`../${platform}_playlist_proxy.php?id=${playlistId}`);
+            const data = await res.json();
+
+            if (data.error) return alert("Fehler: " + data.error);
+
+            const trackContainer = document.getElementById("track-forms");
+
+            // Starte Formular
+            let formHTML = `
+                <form method="post" action="../create_card_logic.php">
+                    <input type="hidden" name="batch" value="1">
+            `;
+
+            const tracks = data.tracks.items;
+            tracks.forEach((item, index) => {
+                const track = item.track;
+                const title = track.name;
+                const artist = track.artists.map(a => a.name).join(", ");
+                const year = track.album.release_date.split("-")[0];
+                const songlink = track.external_urls.spotify;
+
+                formHTML += `
+                    <div class="track-card" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                        <h3>Track ${index + 1}</h3>
+                        <input type="hidden" name="tracks[${index}][title]" value="${title}">
+                        <input type="hidden" name="tracks[${index}][artist]" value="${artist}">
+                        <input type="hidden" name="tracks[${index}][year]" value="${year}">
+                        <input type="hidden" name="tracks[${index}][songlink]" value="${songlink}">
+                        <strong>${title}</strong><br>
+                        Künstler: ${artist}<br>
+                        Jahr: ${year}<br>
+                        <a href="${songlink}" target="_blank">🎧 Link</a>
+                    </div>
+                `;
+            });
+
+            // Schließe Formular ab
+            formHTML += `
+                <button type="submit">🎴 Alle Karten aus Playlist erstellen (${tracks.length})</button>
+                </form>
+            `;
+
+            trackContainer.innerHTML = formHTML;
+        }
+
+
     </script>
 </body>
 </html>
