@@ -164,6 +164,7 @@ include 'header.php';
                     <a href="playlist/playlist_detail.php?id=<?= $playlist['id'] ?>">
                         <?= htmlspecialchars($playlist['name']) ?>
                     </a>
+                    <br>
                     <a href="playlist/playlist_detail.php?id=<?= $playlist['id'] ?>">
                         <img src="../assets/icons/edit.svg" alt="Bearbeiten" style="width: 20px; height: 20px;">
                     </a>
