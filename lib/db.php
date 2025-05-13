@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $db   = 'guess_the_groove_db';
-$user = 'myuser'; // old: root
-$pass = 'mypass'; // old: ''
+$user = 'root'; // old: root
+$pass = ''; // old: ''
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
