@@ -152,8 +152,8 @@ if (isset($_SESSION['user_id'])) {
                             <img src="../assets/icons/edit.svg" alt="Bearbeiten" style="width: 20px; height: 20px;">
                         </a>
 
-                        <a href="remove_from_playlist.php?playlist_id=<?= $playlistId ?>&card_id=<?= $card['id'] ?>" onclick="return confirm('Karte nur aus dieser Playlist entfernen?')">
-                            <img src="../assets/icons/delete.svg" alt="Aus Playlist entfernen" style="width: 20px; height: 20px;">
+                        <a href="../delete_card?id=<?= $card['id'] ?>" onclick="return confirm('Wirklich löschen?')">
+                            <img src="../assets/icons/delete.svg" alt="Löschen" style="width: 20px; height: 20px;">
                         </a>
 
                     <?php endif; ?>
@@ -163,6 +163,10 @@ if (isset($_SESSION['user_id'])) {
                     <?php if ($loggedInUserId == $playlist['user_id']): ?>
                             <a href="#" onclick="openPlaylistModal(<?= $card['id'] ?>)" title="Zu Playlist hinzufügen">
                                 <img src="../assets/icons/playlist_add.svg" alt="Playlist hinzufügen" style="width: 20px; height: 20px;">
+                            </a>
+
+                            <a href="remove_from_playlist.php?playlist_id=<?= $playlistId ?>&card_id=<?= $card['id'] ?>" onclick="return confirm('Karte nur aus dieser Playlist entfernen?')">
+                                <img src="../assets/icons/playlist_remove.svg" alt="Aus Playlist entfernen" style="width: 20px; height: 20px;">
                             </a>
                     <?php endif; ?>
                 </div>

@@ -15,8 +15,8 @@ if (!$userId) die("Nicht eingeloggt.");
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['batch'])) {
 
     // Playlist anhand des ersten Tracks erstellen
-    $firstTrack = $_POST['tracks'][0] ?? null;
-    $playlistName = $firstTrack['artist'] ?? 'Neue Playlist';
+    $playlist = $_POST['playlist'] ?? [];
+    $playlistName = $playlist['name'] ?? 'Neue Playlist';
 
     // Playlist erstellen
     $stmt = $pdo->prepare("INSERT INTO playlists (user_id, name) VALUES (?, ?)");
@@ -83,6 +83,8 @@ function generateCard($userId, $title, $artist, $year, $songlink, $pdo) {
     $platform = 'Andere';
     if (strpos($songlink, 'deezer.com/track/') !== false) {
         $platform = 'Deezer';
+    } elseif (strpos($songlink, 'deezer.com/playlist/') !== false) {
+        $platform = 'Deezer Playlist';
     } elseif (preg_match('/spotify\.com\/track\//', $songlink)) {
         $platform = 'Spotify';
     } elseif (preg_match('/spotify\.com\/playlist\//', $songlink)) {

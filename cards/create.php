@@ -173,8 +173,13 @@ include 'header.php';
             if (link.includes("spotify.com/playlist/")) {
                 platform = "spotify";
                 playlistId = link.match(/playlist\/([a-zA-Z0-9]+)/)[1];
+            } else if (/deezer\.com\/(?:[a-z]{2}\/)?playlist\/\d+/.test(link)) {
+                platform = "deezer";
+                const match = link.match(/playlist\/(\d+)/);
+                playlistId = match ? match[1] : null;
+                if (!playlistId) return alert("Playlist-ID konnte nicht erkannt werden.");
             } else {
-                alert("Nur Spotify-Playlisten werden derzeit unterstützt.");
+                alert("Nur Spotify- und Deezer-Playlisten werden derzeit unterstützt.");
                 return;
             }
 
@@ -184,20 +189,23 @@ include 'header.php';
             if (data.error) return alert("Fehler: " + data.error);
 
             const trackContainer = document.getElementById("track-forms");
+            const tracks = platform === "spotify" ? data.tracks.items.map(item => item.track) : data.tracks.data;
 
-            // Starte Formular
-            let formHTML = `
-                <form method="post" action="../create_card_logic.php">
-                    <input type="hidden" name="batch" value="1">
-            `;
+            let formHTML = `<form method="post" action="../create_card_logic.php"><input type="hidden" name="batch" value="1">`;
 
-            const tracks = data.tracks.items;
-            tracks.forEach((item, index) => {
-                const track = item.track;
-                const title = track.name;
-                const artist = track.artists.map(a => a.name).join(", ");
-                const year = track.album.release_date.split("-")[0];
-                const songlink = track.external_urls.spotify;
+            tracks.forEach((track, index) => {
+                const title = track.title || track.name;
+                const artist = platform === "spotify"
+                    ? track.artists.map(a => a.name).join(", ")
+                    : track.artist.name;
+                let year = "";
+                if (platform === "spotify") {
+                    year = (track.album.release_date || "").split("-")[0];
+                } else if (platform === "deezer") {
+                    // Deezer liefert `release_date` oft auf Track-Ebene
+                    year = (track.release_date || "").split("-")[0];
+                }
+                const songlink = platform === "spotify" ? track.external_urls.spotify : track.link;
 
                 formHTML += `
                     <div class="track-card" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
@@ -214,14 +222,10 @@ include 'header.php';
                 `;
             });
 
-            // Schließe Formular ab
-            formHTML += `
-                <button type="submit">🎴 Alle Karten aus Playlist erstellen (${tracks.length})</button>
-                </form>
-            `;
-
+            formHTML += `<button type="submit">🎴 Alle Karten aus Playlist erstellen (${tracks.length})</button></form>`;
             trackContainer.innerHTML = formHTML;
         }
+
 
 
     </script>
