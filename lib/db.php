@@ -1,5 +1,5 @@
 <?php
-$host = 'localhost';
+$host = 'db'; // old: localhost
 $db   = 'guess_the_groove_db';
 $user = 'myuser'; // old: root
 $pass = 'mypass'; // old: ''
