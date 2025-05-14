@@ -14,9 +14,12 @@ if (!$userId) die("Nicht eingeloggt.");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['batch'])) {
 
-    // Playlist anhand des ersten Tracks erstellen
+    // Playlist erstellen
     $playlist = $_POST['playlist'] ?? [];
-    $playlistName = $playlist['name'] ?? 'Neue Playlist';
+    $playlistName = $playlist['name'] ?? '';
+    if ($playlistName == '') {
+        $playlistName = $playlist['data'] ?? 'Neue Playlist';
+    }
 
     // Playlist erstellen
     $stmt = $pdo->prepare("INSERT INTO playlists (user_id, name) VALUES (?, ?)");
