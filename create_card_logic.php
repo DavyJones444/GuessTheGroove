@@ -133,7 +133,7 @@ function generateCard($userId, $title, $artist, $year, $songlink, $pdo) {
     imagedestroy($qrImage);
 
     // QR-Hintergrund
-    $qrBgPath = dirname(__DIR__) . "/hitster_customs/assets/qr_background.png";
+    $qrBgPath = __DIR__ . "/assets/qr_background.png";
     $qrBgImage = imagecreatefrompng($qrBgPath);
     $destX = (imagesx($qrBgImage) - $qrNewWidth) / 2 - 5;
     $destY = (imagesy($qrBgImage) - $qrNewHeight) / 2 - 2;
