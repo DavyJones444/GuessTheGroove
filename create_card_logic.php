@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['batch'])) {
 function centerText($image, $text, $size, $y, $color, $font) {
     $bbox = imagettfbbox($size, 0, $font, $text);
     $textWidth = $bbox[2] - $bbox[0];
-    $x = (imagesx($image) - $textWidth) / 2;
+    $x = (int)((imagesx($image) - $textWidth) / 2);
     imagettftext($image, $size, 0, $x, $y, $color, $font, $text);
 }
 
@@ -70,8 +70,8 @@ function centerMultilineTextIfLong($image, $text, $size, $startY, $lineHeight, $
     foreach ($lines as $i => $line) {
         $bbox = imagettfbbox($size, 0, $font, $line);
         $textWidth = $bbox[2] - $bbox[0];
-        $x = (imagesx($image) - $textWidth) / 2;
-        $y = $startY + $i * $lineHeight;
+        $x = (int)((imagesx($image) - $textWidth) / 2);
+        $y = (int)($startY + $i * $lineHeight);
         imagettftext($image, $size, 0, $x, $y, $color, $font, $line);
     }
 }
