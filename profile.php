@@ -210,8 +210,8 @@ include 'header.php';
     <?php if ($loggedInUserId == $profileUserId): ?>
         <h3 class="header-style">Account-Einstellungen</h3>
         <div class="div-style">Benutzername ändern</div>
-        <form method="post" action="update_profile" class="form-container">
-            <input type="text" name="username" class="input_field">
+        <form method="post" action="change_username.php" class="form-container">
+            <input type="text" name="new_name" class="input_field">
             <button type="submit" class="button">Ändern</button>
         </form>
 
@@ -219,7 +219,7 @@ include 'header.php';
         <div style="margin: 30px 0;"></div>
 
         <div class="div-style">Passwort ändern</div>
-        <form method="post" action="change_password" class="form-container">
+        <form method="post" action="change_password.php" class="form-container">
             <input type="password" name="current_password" placeholder="Aktuelles Passwort" required class="input-field">
             <input type="password" name="new_password" placeholder="Neues Passwort" required class="input-field">
             <input type="password" name="confirm_password" placeholder="Neues Passwort wiederholen" required class="input-field">
@@ -230,7 +230,7 @@ include 'header.php';
         <div style="margin: 30px 0;"></div>
 
         <div class="div-style">Profilbild ändern</div>
-        <form action="upload_profile_pic" method="post" enctype="multipart/form-data" class="form-container">
+        <form action="upload_profile_pic.php" method="post" enctype="multipart/form-data" class="form-container">
             <input type="file" name="profile_pic" accept="image/*" required class="button">
             <button type="submit" class="button">Hochladen</button>
         </form>
