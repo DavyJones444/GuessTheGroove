@@ -114,7 +114,7 @@ if (isset($_SESSION['user_id'])) {
                 <img src="../assets/icons/delete.svg" alt="Löschen" style="width: 24px; height: 24px;">
             </a>
 
-            <a href="../export_playlist.php?id=<?= $playlistId ?>" title="Playlist herunterladen (PDF)">
+            <a href="export_playlist.php?id=<?= $playlistId ?>" title="Playlist herunterladen (PDF)">
                 <img src="../assets/icons/download.svg" alt="Download" style="width: 24px; height: 24px;">
             </a>
         </div>
@@ -130,10 +130,10 @@ if (isset($_SESSION['user_id'])) {
                     <div class="flip-container" onclick="toggleImage(this, <?= $card['id'] ?>)">
                         <div class="flipper" id="flipper-<?= $card['id'] ?>">
                             <div class="front">
-                                <img src="../cards/images/<?= htmlspecialchars($card['image_text']) ?>" alt="Bild">
+                                <img src="../card/images/<?= htmlspecialchars($card['image_text']) ?>" alt="Bild">
                             </div>
                             <div class="back">
-                                <img src="../cards/images/<?= htmlspecialchars($card['image_qr']) ?>" alt="QR-Code">
+                                <img src="../card/images/<?= htmlspecialchars($card['image_qr']) ?>" alt="QR-Code">
                             </div>
                         </div>
                     </div>

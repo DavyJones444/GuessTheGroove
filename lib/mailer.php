@@ -37,7 +37,7 @@ function sendMail($to, $subject, $body) {
  * Spezielle E-Mail für Verifizierung
  */
 function sendVerificationEmail($email, $token) {
-    $verificationLink = "http://192.168.0.61/hitster_customs/verify.php?token=$token";
+    $verificationLink = "http://192.168.0.61/lib/verify.php?token=$token";
     $subject = 'Bitte bestätige deine E-Mail-Adresse';
     $body = "Hallo,\n\nbitte klicke auf den folgenden Link, um deine E-Mail-Adresse zu bestätigen:\n$verificationLink";
 

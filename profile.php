@@ -94,10 +94,10 @@ include 'header.php';
                             <div class="flip-container" onclick="toggleImage(this, <?= $card['id'] ?>)">
                                 <div class="flipper" id="flipper-<?= $card['id'] ?>">
                                     <div class="front">
-                                        <img src="../cards/images/<?= htmlspecialchars($card['image_text']) ?>" alt="Bild">
+                                        <img src="../card/images/<?= htmlspecialchars($card['image_text']) ?>" alt="Bild">
                                     </div>
                                     <div class="back">
-                                        <img src="../cards/images/<?= htmlspecialchars($card['image_qr']) ?>" alt="QR-Code">
+                                        <img src="../card/images/<?= htmlspecialchars($card['image_qr']) ?>" alt="QR-Code">
                                     </div>
                                 </div>
                             </div>
@@ -112,15 +112,15 @@ include 'header.php';
                             </a>
 
                             <?php if ($loggedInUserId == $profileUserId): ?>
-                                <a href="../edit_card?id=<?= $card['id'] ?>" title="Bearbeiten">
+                                <a href="../edit_card.php?id=<?= $card['id'] ?>" title="Bearbeiten">
                                     <img src="../assets/icons/edit.svg" alt="Bearbeiten" style="width: 20px; height: 20px;">
                                 </a>
 
-                                <a href="../delete_card?id=<?= $card['id'] ?>" onclick="return confirm('Wirklich löschen?')">
+                                <a href="../card/delete_card.php?id=<?= $card['id'] ?>" onclick="return confirm('Wirklich löschen?')">
                                     <img src="../assets/icons/delete.svg" alt="Löschen" style="width: 20px; height: 20px;">
                                 </a>
                             <?php endif; ?>
-                            <a href="../download_card.php?id=<?= $card['id'] ?>" title="Download">
+                            <a href="../card/download_card.php?id=<?= $card['id'] ?>" title="Download">
                                 <img src="../assets/icons/download.svg" alt="Download" style="width: 20px; height: 20px;">
                             </a>
                             <?php if ($loggedInUserId == $profileUserId): ?>
@@ -242,7 +242,7 @@ include 'header.php';
         <form method="post" action="logout" class="form-container">
             <button type="submit" class="button">Abmelden</button>
         </form>
-        <form method="post" action="delete_account" onsubmit="return confirm('Account wirklich löschen?')" class="form-container">
+        <form method="post" action="logic/delete_account" onsubmit="return confirm('Account wirklich löschen?')" class="form-container">
             <button type="submit" class="button">Account löschen</button>
         </form>
     <?php endif; ?>
@@ -275,7 +275,7 @@ include 'header.php';
         var newStatus = currentStatus == 1 ? 0 : 1;  // Status wechseln (0 -> 1 oder 1 -> 0)
         
         // AJAX-Anfrage zum Aktualisieren des Status
-        $.post('update_card_status', {
+        $.post('card/update_card_status.php', {
             card_id: cardId,
             is_public: newStatus
         }, function(response) {
