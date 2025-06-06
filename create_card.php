@@ -1,4 +1,4 @@
 <?php 
 header("Access-Control-Allow-Origin: *");
-require 'cards/create.php'; 
+require 'card/create_card.php'; 
 ?>

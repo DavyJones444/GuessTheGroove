@@ -34,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Alte Bilder löschen
     if (!empty($card['image_text']) && file_exists(__DIR__ . "/images/" . $card['image_text'])) {
-        unlink(__DIR__ . "/images/" . $card['image_text']);
+        unlink(__DIR__ . "/card/images/" . $card['image_text']);
     }
     if (!empty($card['image_qr']) && file_exists(__DIR__ . "/images/" . $card['image_qr'])) {
-        unlink(__DIR__ . "/images/" . $card['image_qr']);
+        unlink(__DIR__ . "/card/images/" . $card['image_qr']);
     }
 
     // === Bild + QR-Code generieren wie in create.php (du kannst das aus create.php kopieren) ===
     ob_start(); // Optional zur Fehlervermeidung bei Bildausgabe
-    require 'create_card_logic.php'; // ausgelagerte Wiederverwendung möglich (siehe Hinweis unten)
+    require 'card/create_card_logic.php'; // ausgelagerte Wiederverwendung möglich (siehe Hinweis unten)
     ob_end_clean();
 
     // Update in Datenbank
@@ -88,7 +88,7 @@ include 'header.php';
 
             if (link.includes("deezer.com/track/")) {
                 const trackId = link.split("/track/")[1].split(/[?#]/)[0];
-                const res = await fetch(`deezer_proxy.php?id=${trackId}`);
+                const res = await fetch(`proxy/deezer_proxy.php?id=${trackId}`);
                 const data = await res.json();
                 if (data.error) return alert("Fehler: " + data.error);
 
@@ -100,7 +100,7 @@ include 'header.php';
                 const match = link.match(/\/track\/([a-zA-Z0-9]+)/);
                 if (!match) return alert("Track-ID konnte nicht erkannt werden.");
                 const trackId = match[1];
-                const res = await fetch(`spotify_proxy.php?id=${trackId}`);
+                const res = await fetch(`proxy/spotify_proxy.php?id=${trackId}`);
                 const data = await res.json();
                 if (data.error) return alert("Fehler: " + data.error);
 
@@ -124,7 +124,7 @@ include 'header.php';
 
                 if (!videoId) return alert("Video-ID konnte nicht erkannt werden.");
 
-                const res = await fetch(`youtube_proxy.php?id=${videoId}`);
+                const res = await fetch(`proxy/youtube_proxy.php?id=${videoId}`);
                 const data = await res.json();
                 if (data.error) return alert("Fehler: " + data.error);
 

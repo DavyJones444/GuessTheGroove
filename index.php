@@ -3,7 +3,7 @@ require 'lib/db.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: welcome");
+    header("Location: welcome.php");
     exit();
 }
 
@@ -87,10 +87,10 @@ include 'header.php';
                     <div class="flip-container" onclick="toggleImage(this, <?= $card['id'] ?>)">
                         <div class="flipper" id="flipper-<?= $card['id'] ?>">
                             <div class="front">
-                                <img src="cards/images/<?= htmlspecialchars($card['image_text']) ?>" alt="Bild">
+                                <img src="card/images/<?= htmlspecialchars($card['image_text']) ?>" alt="Bild">
                             </div>
                             <div class="back">
-                                <img src="cards/images/<?= htmlspecialchars($card['image_qr']) ?>" alt="QR-Code">
+                                <img src="card/images/<?= htmlspecialchars($card['image_qr']) ?>" alt="QR-Code">
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ include 'header.php';
                         <img src="assets/icons/music_note.svg" alt="Songlink" style="width: 20px; height: 20px;">
                     </a>
 
-                    <a href="download_card?id=<?= $card['id'] ?>" title="Download">
+                    <a href="card/download_card.php?id=<?= $card['id'] ?>" title="Download">
                         <img src="assets/icons/download.svg" alt="Download" style="width: 20px; height: 20px;">
                     </a>
                     

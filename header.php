@@ -187,7 +187,7 @@ if (isset($_SESSION['user_id'])) {
             <a href="/play" class="btn-play">Spielen</a>
         </div>
         <div class="bottom">
-            <a href="/impressum">Impressum</a>
+            <a href="/legal_notice.php">Impressum</a>
         </div>
     </nav>
 </header>

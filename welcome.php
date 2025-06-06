@@ -193,7 +193,7 @@ include 'header.php';
         const img = document.createElement("img");
 
         const image = images[index];
-        img.src = `cards/images/${image}`;
+        img.src = `card/images/${image}`;
         img.classList.add("floating-card");
 
         // Zufällige horizontale Position innerhalb der Seite

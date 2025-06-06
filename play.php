@@ -61,7 +61,7 @@ $songUrl = $_GET['url'] ?? '';
                     if (!isMobile) return;
 
                     const deeplink = 'hitster://$hitsterLang/$hitsterId';
-                    const fallbackUrl = 'https://192.168.0.61/play.php';
+                    const fallbackUrl = 'https://192.168.0.101/play.php';
                     const now = Date.now();
 
                     // Wenn App nicht geöffnet → redirect zur Webseite
@@ -263,7 +263,7 @@ include 'header.php';
             btn.style.display = 'none';
 
             // Neues Audio-Element laden
-            const audio = new Audio(`youtube_audio_proxy.php?url=${encodeURIComponent(url)}`);
+            const audio = new Audio(`proxy/youtube_audio_proxy.php?url=${encodeURIComponent(url)}`);
             audio.id = "ytAudio";
             audio.preload = "auto";
 
@@ -310,7 +310,7 @@ include 'header.php';
 
             if (showLoading) loadingOverlay.style.display = 'flex';
 
-            fetch(`deezer_proxy.php?id=${trackId}`)
+            fetch(`proxy/deezer_proxy.php?id=${trackId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (showLoading) loadingOverlay.style.display = 'none';
@@ -367,7 +367,7 @@ include 'header.php';
             const trackId = match[1];
             
             try {
-                const res = await fetch(`spotify_proxy.php?id=${trackId}`);
+                const res = await fetch(`proxy/spotify_proxy.php?id=${trackId}`);
                 const data = await res.json();
                 
                 if (data.error) {
@@ -378,7 +378,7 @@ include 'header.php';
                 const title = data.name;
                 const artist = data.artists[0].name;
 
-                fetch(`deezer_search_proxy.php?q=track:"${encodeURIComponent(cleanTitle(title))}" artist:"${encodeURIComponent(artist)}"`)
+                fetch(`proxy/deezer_search_proxy.php?q=track:"${encodeURIComponent(cleanTitle(title))}" artist:"${encodeURIComponent(artist)}"`)
                     .then(res => res.json())
                     .then(data => {
                         if (data.data && data.data.length > 0) {
