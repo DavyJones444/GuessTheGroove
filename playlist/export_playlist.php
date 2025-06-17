@@ -1,4 +1,5 @@
 <?php
+chdir(__DIR__ . '/..');
 require 'lib/db.php';
 require 'vendor/autoload.php'; // ← Für FPDF
 
