@@ -2,7 +2,7 @@
 
 <div class="wrapper">
     <h2 class="header-style">Musikquiz Player</h2>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <script src="<?= ROOT_URL ?>js/jsQR.js"></script>
     <form method="get" id="urlForm" style="display: none;">
         <input type="text" name="url" value="<?= htmlspecialchars($viewData['songUrl']) ?>" >
         <button type="submit">Laden</button>
@@ -23,7 +23,43 @@
 
     <div id="player-container"></div>
     
+    <div class="div-style" id="spotify-text-div" style="margin-top:20px; display:none;">
+        Der Player nutzt standardmäßig den Experimentellen Modus. <br>
+        Dabei werden Titel und Interpret aus Spotify gelesen und bei Deezer gesucht.<br>
+        Dadurch ist ein Abspielen ohne Titelanzeige möglich.<br>
+        Nutze bei Fehlern den Nicht Experimentellen Modus.
     </div>
+
+    <div class="div-style" id="spotify-button-div" style="margin-top:20px; display:none;">
+        <div style="margin-top: 10px;">
+            <button id="experimentalBtn" class="button">❌ Nicht Experimenteller Modus</button>
+        </div>
+    </div>
+
+    <div class="div-style" id="spotify-embed-div" style="margin-top:20px; display:none;">
+        <iframe id="spotify-embed" style="border-radius:12px" 
+                src="" 
+                width="400px" 
+                height="100" 
+                frameborder="0" 
+                allowtransparency="true" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+        </iframe>
+    </div>
+
+    <div class="div-style">
+        <button id="startStopBtn" class="button" style="display:none;">▶️ Start</button>
+    </div>
+
+    <div id="loading-overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #4CAF50; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
+    </div>
+
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+
+</div>
 
 <script>
     // Wir nutzen hier die PHP Variablen, die der Controller übergeben hat
@@ -243,12 +279,9 @@
 
 
     function tick() {
-    if (!scanActive) 
-        log("inactive...");
-        return;
+    if (!scanActive) return;
 
     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-        log("active");
         canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
         const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
