@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['batch'])) {
         $year = $track['year'] ?? '0000';
         $songlink = $track['songlink'] ?? '';
 
-        $cardId = generateCard($userId, $title, $artist, $year, $songlink, $pdo);
+        $cardId = generateCard(   $userId, $title, $artist, $year, $songlink, $pdo);
         
         // Karte zur Playlist hinzufügen
         $stmt = $pdo->prepare("INSERT INTO playlist_cards (playlist_id, card_id) VALUES (?, ?)");
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['batch'])) {
     $artist = $_POST['artist'];
     $songlink = $_POST['songlink'];
 
-    generateCard($userId, $title, $artist, $year, $songlink, $pdo);
+    generateCard(   $userId, $title, $artist, $year, $songlink, $pdo);
 
     header("Location: ../profile.php");
     exit;
@@ -79,7 +79,7 @@ function centerMultilineTextIfLong($image, $text, $size, $startY, $lineHeight, $
 function generateCard($userId, $title, $artist, $year, $songlink, $pdo) {
     require_once __DIR__ . '/../lib/phpqrcode/qrlib.php';
 
-    // Plattform erkennen (wird für die DB Info noch gebraucht)
+    // Plattform erkennen
     $platform = 'Andere';
     if (strpos($songlink, 'deezer.com/track/') !== false) {
         $platform = 'Deezer';
@@ -92,22 +92,6 @@ function generateCard($userId, $title, $artist, $year, $songlink, $pdo) {
               strpos($songlink, 'youtu.be/') !== false) {
         $platform = 'YouTube';
     }
-
-    // ---------------------------------------------------------
-    // SCHRITT 1: Erst in die Datenbank einfügen, um die ID zu bekommen
-    // ---------------------------------------------------------
-    
-    // Wir lassen image_text und image_qr erstmal leer (NULL)
-    $stmt = $pdo->prepare("INSERT INTO cards (user_id, title, year, artist, songlink, platform, is_public, created_at)
-                           VALUES (?, ?, ?, ?, ?, ?, 0, NOW())");
-    $stmt->execute([$userId, $title, $year, $artist, $songlink, $platform]);
-    
-    // Die ID der neuen Karte holen
-    $newCardId = $pdo->lastInsertId();
-
-    // ---------------------------------------------------------
-    // SCHRITT 2: Bilder generieren (jetzt mit der ID)
-    // ---------------------------------------------------------
 
     // Hintergrundbild zufällig auswählen
     $bgFiles = glob("../assets/backgrounds/*.{jpg,JPG,jpeg,JPEG}", GLOB_BRACE);
@@ -133,12 +117,8 @@ function generateCard($userId, $title, $artist, $year, $songlink, $pdo) {
     imagedestroy($im);
 
     // QR-Code generieren
-    // HIER IST DIE ÄNDERUNG: Wir nutzen jetzt den Link zu play.php mit der ID
-    $qrContent = "https://gtg.luda-vision.de/" . $newCardId;
-
     $qrTemp = tempnam(sys_get_temp_dir(), 'qr');
-    // QR Code aus dem neuen Link generieren
-    QRcode::png($qrContent, $qrTemp, QR_ECLEVEL_H, 10, 0);
+    QRcode::png($songlink, $qrTemp, QR_ECLEVEL_H, 10, 0);
     $qrImage = imagecreatefrompng($qrTemp);
     imagefilter($qrImage, IMG_FILTER_NEGATE);
 
@@ -165,14 +145,19 @@ function generateCard($userId, $title, $artist, $year, $songlink, $pdo) {
     imagepng($qrBgImage, __DIR__ . "/images/$image_qr");
     imagedestroy($qrBgImage);
     unlink($qrTemp);
+    // Wenn bereits alte Bilder existieren, löschen
+    if (isset($old_image_text) && file_exists(__DIR__ . "/card/images/$old_image_text")) {
+        unlink(__DIR__ . "/card/images/$old_image_text");
+    }
+    if (isset($old_image_qr) && file_exists(__DIR__ . "/card/images/$old_image_qr")) {
+        unlink(__DIR__ . "/card/images/$old_image_qr");
+    }
 
-    // ---------------------------------------------------------
-    // SCHRITT 3: Datenbank Update (Bilder nachtragen)
-    // ---------------------------------------------------------
-    
-    $stmt = $pdo->prepare("UPDATE cards SET image_text = ?, image_qr = ? WHERE id = ?");
-    $stmt->execute([$image_text, $image_qr, $newCardId]);
+    // Datenbank speichern
+    $stmt = $pdo->prepare("INSERT INTO cards (user_id, title, year, artist, songlink, platform, image_text, image_qr, is_public, created_at)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NOW())");
+    $stmt->execute([$userId, $title, $year, $artist, $songlink, $platform, $image_text, $image_qr]);
 
-    return $newCardId; // gibt die ID der Karte zurück
+    return $pdo->lastInsertId(); // gibt die ID der Karte zurück
 }
 ?>

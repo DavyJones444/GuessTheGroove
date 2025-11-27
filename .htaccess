@@ -7,6 +7,12 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
+# -----------------------------------------------------------
+# QR-Code Kurz-URLs (z.B. gtg.luda-vision.de/123)
+# Leitet intern weiter an play.php?id=123
+# -----------------------------------------------------------
+RewriteRule ^([0-9]+)$ play.php?id=$1 [L,QSA]
+
 # Leitet Aufrufe wie /login.php → /login weiter (nur für definierte Frontend-Seiten)
 RewriteCond %{THE_REQUEST} "^[^ ]* /(login|register|profile|index|create_card|edit_card|delete_card|update_card_status|upload_profile_pic|logout|delete_account|update_profile|edit_playlist|playlist_detail|datenschutz|forgot_password|impressum|kontakt|login_code|login_email|play|reset_password|welcome)\.php" [NC]
 RewriteRule ^(.*)\.php$ /$1 [R=301,L]
