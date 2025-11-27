@@ -4,7 +4,7 @@ $playlist = $viewData['playlist'];
 $cards = $viewData['cards'];
 $isOwner = isset($viewData['user']) && $viewData['user']['id'] == $playlist['user_id'];
 
-include __DIR__ . '/../../layouts/header.php'; 
+include __DIR__ . '/../layouts/header.php'; 
 ?>
 
 <main>
@@ -122,4 +122,4 @@ include __DIR__ . '/../../layouts/header.php';
     }
 </script>
 
-<?php include __DIR__ . '/../../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../layouts/footer.php'; ?>

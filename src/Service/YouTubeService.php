@@ -32,18 +32,39 @@ class YouTubeService {
     }
 
     public function streamAudio($url) {
-        // ... (Dein yt-dlp Code aus youtube_audio_proxy.php) ...
-        // Achte darauf, header() Aufrufe hier NICHT zu machen, das macht der Controller!
-        // Stattdessen gibst du den Pfad zur temporären Datei zurück.
-        
+        // Temp Datei Pfad
         $tmpFile = tempnam(sys_get_temp_dir(), 'yt_') . '.m4a';
-        $cmd = escapeshellarg($this->ytDlpPath) . " -f bestaudio[ext=m4a] --max-filesize 10M -o \"$tmpFile\" -x --audio-format m4a --quiet " . escapeshellarg($url);
         
+        // Pfad zur EXE korrigieren (realpath löst ../.. auf und prüft Existenz)
+        $realPathToExe = realpath($this->ytDlpPath);
+
+        // DEBUG 1: Prüfen ob Exe gefunden wurde
+        if (!$realPathToExe || !file_exists($realPathToExe)) {
+            die("FEHLER: yt-dlp.exe nicht gefunden! <br>Gesucht unter: " . $this->ytDlpPath . "<br>Absoluter Pfad wäre: " . __DIR__ . '/../../bin/yt-dlp.exe');
+        }
+
+        // Befehl bauen
+        // WICHTIG: "2>&1" leitet Fehlermeldungen in den Output um, damit wir sie sehen!
+        $cmd = escapeshellarg($realPathToExe) . " -f bestaudio[ext=m4a] --max-filesize 10M -o \"$tmpFile\" -x --audio-format m4a --no-playlist --quiet \"$url\" 2>&1";
+        
+        // Ausführen
+        $output = [];
+        $returnVar = 0;
         exec($cmd, $output, $returnVar);
 
-        if ($returnVar === 0 && file_exists($tmpFile)) {
-            return $tmpFile;
+        // DEBUG 2: Wenn es schiefgeht, Fehler ausgeben
+        if ($returnVar !== 0 || !file_exists($tmpFile)) {
+            echo "<h1>Fehler bei yt-dlp Ausführung (Code $returnVar)</h1>";
+            echo "<strong>Befehl war:</strong> $cmd <br><br>";
+            echo "<strong>Output vom System:</strong><pre>";
+            print_r($output);
+            echo "</pre>";
+            
+            // Datei aufräumen falls sie 0kb hat
+            if (file_exists($tmpFile)) unlink($tmpFile);
+            exit; // Script beenden damit man den Fehler sieht
         }
-        return false;
+
+        return $tmpFile;
     }
 }

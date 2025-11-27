@@ -9,6 +9,14 @@ class BaseController {
         
         // Session starten, falls noch nicht passiert
         if (session_status() === PHP_SESSION_NONE) {
+            // Session-Cookie Parameter setzen, damit sie überall gelten
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path' => '/', // WICHTIG: Gilt für die ganze Domain
+                'domain' => '', 
+                'secure' => false, // Bei localhost false
+                'httponly' => true
+            ]);
             session_start();
         }
 

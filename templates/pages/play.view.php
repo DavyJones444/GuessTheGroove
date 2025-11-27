@@ -61,193 +61,19 @@
 
 </div>
 
+<script src="<?= ROOT_URL ?>js/jsQR.js"></script>
 <script>
-    // Wir nutzen hier die PHP Variablen, die der Controller übergeben hat
+    // PHP Variablen
     const service = "<?= $viewData['service'] ?>";
     const songUrl = "<?= $viewData['songUrl'] ?>";
     const token = "<?= $viewData['token'] ?>";
     
+    // UI Elemente
     const btn = document.getElementById('startStopBtn');
+    const loadingOverlay = document.getElementById('loading-overlay');
     let isPlaying = false;
-    let player, deviceId;
 
-    function toggleButton() {
-    isPlaying = !isPlaying;
-    btn.textContent = isPlaying ? '⏹️ Stopp' : '▶️ Start';
-    }
-
-    function loadYouTube(url) {
-        const container = document.getElementById('player-container');
-        const btn = document.getElementById('startStopBtn');
-        const loadingOverlay = document.getElementById('loading-overlay');
-
-        // Zeige Ladeanimation
-        loadingOverlay.style.display = 'flex';
-
-        // Setze den Player zurück
-        container.innerHTML = '';
-        btn.style.display = 'none';
-
-        // Neues Audio-Element laden
-        const audio = new Audio(`/api/youtube/audio?url=${encodeURIComponent(url)}`);
-        audio.id = "ytAudio";
-        audio.preload = "auto";
-
-        // Wenn bereit: UI anzeigen
-        audio.addEventListener('canplaythrough', () => {
-            loadingOverlay.style.display = 'none';
-            container.innerHTML = '';
-            container.appendChild(audio);
-
-            btn.style.display = 'inline-block';
-            btn.textContent = '▶️ Start';
-
-            btn.onclick = () => {
-            if (audio.paused) {
-                audio.play();
-                btn.textContent = '⏸️ Stop';
-            } else {
-                audio.pause();
-                audio.currentTime = 0;
-                btn.textContent = '▶️ Start';
-            }
-            };
-
-            audio.addEventListener('ended', () => {
-            btn.textContent = '▶️ Start';
-            });
-        });
-
-        // Fehlerbehandlung
-        audio.addEventListener('error', () => {
-            loadingOverlay.style.display = 'none';
-            alert("Fehler beim Laden des Audios.");
-        });
-    }
-
-    function loadDeezer(url, showLoading = false) {
-        const match = url.match(/track\/(\d+)/);
-        if (!match) return alert("Ungültiger Deezer-Link");
-
-        const trackId = match[1];
-        const container = document.getElementById('player-container');
-        const btn = document.getElementById('startStopBtn');
-        const loadingOverlay = document.getElementById('loading-overlay');
-
-        if (showLoading) loadingOverlay.style.display = 'flex';
-
-        fetch(`/api/deezer/track?id=${trackId}`)
-            .then(res => res.json())
-            .then(data => {
-                if (showLoading) loadingOverlay.style.display = 'none';
-
-                if (!data.preview) {
-                    alert("Keine Vorschau verfügbar.");
-                    return;
-                }
-
-                container.innerHTML = `<audio id="deezerAudio" src="${data.preview}" preload="auto"></audio>`;
-                const audio = document.getElementById('deezerAudio');
-                btn.style.display = 'inline-block';
-                btn.textContent = '▶️ Start';
-
-                btn.onclick = () => {
-                    if (audio.paused) {
-                        audio.play();
-                        btn.textContent = '⏸️ Stop';
-                    } else {
-                        audio.pause();
-                        audio.currentTime = 0;
-                        btn.textContent = '▶️ Start';
-                    }
-                };
-
-                audio.addEventListener('ended', () => {
-                    btn.textContent = '▶️ Start';
-                });
-            })
-            .catch(err => {
-                if (showLoading) loadingOverlay.style.display = 'none';
-                console.error("Fehler bei Deezer:", err);
-                alert("Fehler beim Laden der Deezer-Vorschau.");
-            });
-    }
-
-
-    function cleanTitle(title) {
-        // Entfernt alles innerhalb von Klammern und die Klammern selbst
-        return title.replace(/\s*\([^)]*\)/g, '').trim();
-    }
-
-
-    // Experimenteller Modus: Spotify-Link analysieren und Deezer-Song abspielen
-    async function searchDeezerFromSpotify(spotifyUrl) {
-        const loadingOverlay = document.getElementById('loading-overlay');
-        loadingOverlay.style.display = 'flex';
-
-        const match = spotifyUrl.match(/track\/([a-zA-Z0-9]+)/);
-        if (!match) {
-            loadingOverlay.style.display = 'none';
-            return alert("Ungültiger Spotify-Link");
-        }
-        const trackId = match[1];
-        
-        try {
-            const res = await fetch(`/api/spotify/track?id=${trackId}`);
-            const data = await res.json();
-            
-            if (data.error) {
-                loadingOverlay.style.display = 'none';
-                return alert("Fehler: " + data.error);
-            }
-
-            const title = data.name;
-            const artist = data.artists[0].name;
-
-            fetch(`/api/deezer/track?q=track:"${encodeURIComponent(cleanTitle(title))}" artist:"${encodeURIComponent(artist)}"`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.data && data.data.length > 0) {
-                        let foundTrack = null;
-                        for (let i = 0; i < data.data.length; i++) {
-                            const deezerTrack = data.data[i];
-                            if (!(deezerTrack.title.toLowerCase() === cleanTitle(title).toLowerCase())) {
-                                if (deezerTrack.title.toLowerCase().includes(cleanTitle(title).toLowerCase())) {
-                                    foundTrack = deezerTrack;
-                                    break;
-                                }
-                            } else {
-                                foundTrack = deezerTrack;
-                                break;
-                            }
-                        }
-
-                        if (foundTrack) {
-                            console.log("Gefundener Deezer-Track:", foundTrack);
-                            loadDeezer(`https://www.deezer.com/track/${foundTrack.id}`, true);
-                        } else {
-                            alert("Kein exakter Treffer gefunden.");
-                            loadingOverlay.style.display = 'none';
-                        }
-                    } else {
-                        alert("Song nicht auf Deezer gefunden.");
-                        loadingOverlay.style.display = 'none';
-                    }
-                })
-                .catch(err => {
-                    console.error("Fehler bei Deezer Suche:", err);
-                    alert("Fehler bei der Deezer-Suche.");
-                    loadingOverlay.style.display = 'none';
-                });
-
-        } catch (err) {
-            alert("Fehler beim Abrufen der Spotify-Daten.");
-            loadingOverlay.style.display = 'none';
-        }
-    }
-
-
-    // QR-Scanner mit jsQR
+    // --- SCANNER SETUP ---
     let videoElement = null;
     let canvasElement = null;
     let canvasContext = null;
@@ -261,95 +87,249 @@
             canvasElement = document.getElementById('qr-canvas');
             canvasContext = canvasElement.getContext('2d');
 
+            // Kamera starten (Rückkamera bevorzugt)
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
             videoStream = stream;
             videoElement.srcObject = stream;
+            
+            // Wichtig für iOS:
+            videoElement.setAttribute("playsinline", true); 
 
             videoElement.onloadedmetadata = () => {
-            canvasElement.width = videoElement.videoWidth;
-            canvasElement.height = videoElement.videoHeight;
-            scanActive = true;
-            requestAnimationFrame(tick);
+                videoElement.play();
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
+                scanActive = true;
+                requestAnimationFrame(tick);
             };
         } catch (err) {
-            alert("Kamera-Zugriff verweigert oder fehlgeschlagen: " + err.message);
+            alert("Kamera-Fehler: " + err.message);
             cancelScanning();
         }
     }
 
-
     function tick() {
-    if (!scanActive) return;
+        if (!scanActive) return;
 
-    if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-        canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-        const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: "invertFirst"
-        });
+        if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+            canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+            const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+            
+            if (typeof jsQR === 'undefined') return; // Sicherheitscheck
 
-        if (code && code.data && code.data.trim() !== "") {
-            stopScanning();
-            document.querySelector('input[name="url"]').value = code.data.trim();
-            document.getElementById('urlForm').submit();
-            return;
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "attemptBoth"
+            });
+
+            if (code && code.data && code.data.trim() !== "") {
+                const scannedData = code.data.trim();
+                console.log("Gescannter Code:", scannedData);
+
+                // --- HIER IST DIE KORRIGIERTE LOGIK ---
+                let extractedId = null;
+
+                // 1. Suche nach "id=123" (fängt play.php?id=123)
+                const paramMatch = scannedData.match(/[?&]id=(\d+)/);
+                
+                // 2. Suche nach "/123" am Ende (fängt gtg.luda-vision.de/123)
+                // Wir prüfen explizit auf DEINE Domain, um Verwechslungen zu vermeiden
+                const isMyDomain = scannedData.includes('gtg.luda-vision.de') || scannedData.includes('localhost');
+                const pathMatch = scannedData.match(/\/(\d+)(\/|$)/); // Zahl gefolgt von Slash oder Ende
+
+                if (paramMatch) {
+                    extractedId = paramMatch[1];
+                } else if (isMyDomain && pathMatch) {
+                    extractedId = pathMatch[1];
+                } else if (/^\d+$/.test(scannedData)) {
+                    extractedId = scannedData; // Einfach nur eine Zahl gescannt
+                }
+
+                if (extractedId) {
+                    stopScanning();
+                    // WICHTIG: Wir leiten LOKAL weiter, egal was im QR Code stand!
+                    // window.location.search ersetzt nur den "?..." Teil der URL
+                    window.location.search = '?id=' + extractedId;
+                    return;
+                }
+
+                // 3. Fallback: Externe Dienste (Spotify/Deezer/YouTube Links)
+                // Nur wenn KEINE ID gefunden wurde und es NICHT unsere Domain ist
+                if (scannedData.includes('http') && !isMyDomain) {
+                    stopScanning();
+                    document.querySelector('input[name="url"]').value = scannedData;
+                    document.getElementById('urlForm').submit();
+                    return;
+                }
+                // --- LOGIK ENDE ---
+            }
         }
-    }
-
-    requestAnimationFrame(tick);
+        requestAnimationFrame(tick);
     }
 
     function stopScanning() {
-    scanActive = false;
-    document.getElementById('qr-overlay').style.display = 'none';
-    if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
-        videoStream = null;
-    }
+        scanActive = false;
+        const overlay = document.getElementById('qr-overlay');
+        if (overlay) overlay.style.display = 'none';
+        
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+        }
     }
 
     function cancelScanning() {
-    stopScanning();
+        stopScanning();
     }
 
+    // --- PLAYER LOGIK ---
+
+    function toggleButton() {
+        isPlaying = !isPlaying;
+        btn.textContent = isPlaying ? '⏹️ Stopp' : '▶️ Start';
+    }
+
+    // Helfer für Titel-Bereinigung
+    function cleanTitle(title) {
+        return title.replace(/\s*\([^)]*\)/g, '').trim();
+    }
+
+    function loadYouTube(url) {
+        const container = document.getElementById('player-container');
+        if(loadingOverlay) loadingOverlay.style.display = 'flex';
+        container.innerHTML = '';
+        if(btn) btn.style.display = 'none';
+
+        const audio = new Audio(`/api/youtube/audio?url=${encodeURIComponent(url)}`);
+        audio.id = "ytAudio";
+        
+        audio.addEventListener('canplaythrough', () => {
+            if(loadingOverlay) loadingOverlay.style.display = 'none';
+            container.appendChild(audio);
+            if(btn) {
+                btn.style.display = 'inline-block';
+                btn.textContent = '▶️ Start';
+                btn.onclick = () => {
+                    if (audio.paused) { audio.play(); btn.textContent = '⏸️ Stop'; } 
+                    else { audio.pause(); audio.currentTime = 0; btn.textContent = '▶️ Start'; }
+                };
+            }
+            audio.addEventListener('ended', () => { if(btn) btn.textContent = '▶️ Start'; });
+        });
+
+        audio.addEventListener('error', () => {
+            if(loadingOverlay) loadingOverlay.style.display = 'none';
+            alert("Fehler beim Laden des Audios.");
+        });
+    }
+
+    function loadDeezer(url) {
+        const match = url.match(/track\/(\d+)/);
+        if (!match) return alert("Ungültiger Deezer-Link");
+        
+        if(loadingOverlay) loadingOverlay.style.display = 'flex';
+
+        fetch(`/api/deezer/track?id=${match[1]}`)
+            .then(res => res.json())
+            .then(data => {
+                if(loadingOverlay) loadingOverlay.style.display = 'none';
+                if (!data.preview) return alert("Keine Vorschau verfügbar.");
+
+                const container = document.getElementById('player-container');
+                container.innerHTML = `<audio id="deezerAudio" src="${data.preview}" preload="auto"></audio>`;
+                const audio = document.getElementById('deezerAudio');
+                
+                if(btn) {
+                    btn.style.display = 'inline-block';
+                    btn.textContent = '▶️ Start';
+                    btn.onclick = () => {
+                        if (audio.paused) { audio.play(); btn.textContent = '⏸️ Stop'; } 
+                        else { audio.pause(); audio.currentTime = 0; btn.textContent = '▶️ Start'; }
+                    };
+                }
+                audio.addEventListener('ended', () => { if(btn) btn.textContent = '▶️ Start'; });
+            })
+            .catch(err => {
+                if(loadingOverlay) loadingOverlay.style.display = 'none';
+                alert("Fehler bei Deezer.");
+            });
+    }
+
+    async function searchDeezerFromSpotify(spotifyUrl) {
+        if(loadingOverlay) loadingOverlay.style.display = 'flex';
+        
+        const match = spotifyUrl.match(/track\/([a-zA-Z0-9]+)/);
+        if (!match) {
+            if(loadingOverlay) loadingOverlay.style.display = 'none';
+            return alert("Ungültiger Spotify-Link");
+        }
+
+        try {
+            const res = await fetch(`/api/spotify/track?id=${match[1]}`);
+            const data = await res.json();
+            
+            if (data.error) throw new Error(data.error);
+
+            const title = data.name;
+            const artist = data.artists[0].name;
+
+            // Suche bei Deezer
+            fetch(`/api/deezer/search?q=track:"${encodeURIComponent(cleanTitle(title))}" artist:"${encodeURIComponent(artist)}"`)
+                .then(res => res.json())
+                .then(searchData => {
+                    if (searchData.data && searchData.data.length > 0) {
+                        // Einfache Logik: Nimm den ersten Treffer oder suche genauer
+                        const track = searchData.data[0]; 
+                        loadDeezer(`https://www.deezer.com/track/${track.id}`);
+                    } else {
+                        alert("Song nicht auf Deezer gefunden.");
+                        if(loadingOverlay) loadingOverlay.style.display = 'none';
+                    }
+                });
+        } catch (err) {
+            alert("Spotify Fehler: " + err.message);
+            if(loadingOverlay) loadingOverlay.style.display = 'none';
+        }
+    }
+
+    // --- INITIALISIERUNG ---
     if (songUrl) {
-    btn.style.display = 'inline-block';
+        if(btn) btn.style.display = 'inline-block';
     }
 
     if (service === 'spotify') {
-        document.getElementById('spotify-button-div').style.display = 'flex';
-        document.getElementById('spotify-text-div').style.display = 'flex';
-        document.getElementById('spotify-embed-div').style.display = 'flex';
-        document.getElementById('spotify-embed').style.display = 'flex';
+        const uiDivs = ['spotify-button-div', 'spotify-text-div', 'spotify-embed-div'];
+        uiDivs.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.style.display = 'flex';
+        });
+        
+        const embed = document.getElementById('spotify-embed');
         const match = songUrl.match(/track\/([a-zA-Z0-9]+)/);
-                    if (!match) {
-                        loadingOverlay.style.display = 'none';
-                        alert("Ungültiger Spotify-Link");
-                    }
-                    const trackId = match[1];
-                    document.getElementById('spotify-embed').src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator`;
-        document.getElementById('spotify-embed').style.display = 'none';
-        searchDeezerFromSpotify(songUrl);
-    } else if (service === 'youtube') loadYouTube(songUrl);
-    else if (service === 'deezer') loadDeezer(songUrl);
+        if (match && embed) {
+            embed.src = `https://open.spotify.com/embed/track/${match[1]}?utm_source=generator`;
+            embed.style.display = 'none'; // Standardmäßig verstecken
+            searchDeezerFromSpotify(songUrl);
+        }
+    } else if (service === 'youtube') {
+        loadYouTube(songUrl);
+    } else if (service === 'deezer') {
+        loadDeezer(songUrl);
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const btn = document.getElementById('experimentalBtn');
+        const expBtn = document.getElementById('experimentalBtn');
         const spotifyEmbed = document.getElementById('spotify-embed');
-        const playBtn = document.getElementById('startStopBtn');
-
-        if (btn) {
-            btn.addEventListener('click', () => {
-                // Wenn der Modus aktiviert ist, verstecke das Embed und ändere die Schaltfläche
-                if (btn.textContent === "❌ Nicht Experimenteller Modus") {
-                    // Wenn der Button zurückgesetzt wird, zeige das Embed wieder und ändere die Schaltfläche zurück
-                    spotifyEmbed.style.display = 'flex'; // Zeige das Embed wieder
-                    playBtn.style.display = 'none';
-                    btn.textContent = "🔬 Experimenteller Modus (Deezer-Vorschau)"; // Ursprünglicher Buttontext
+        
+        if (expBtn) {
+            expBtn.addEventListener('click', () => {
+                if (expBtn.textContent.includes("Nicht Experimenteller")) {
+                    if(spotifyEmbed) spotifyEmbed.style.display = 'flex';
+                    if(btn) btn.style.display = 'none';
+                    expBtn.textContent = "🔬 Experimenteller Modus (Deezer-Vorschau)";
                 } else {
-                    spotifyEmbed.style.display = 'none'; // Verstecke das Embed
-                    btn.textContent = "❌ Nicht Experimenteller Modus"; // Ändere den Text des Buttons
-                    playBtn.style.display = 'inline-block';
+                    if(spotifyEmbed) spotifyEmbed.style.display = 'none';
+                    if(btn) btn.style.display = 'inline-block';
+                    expBtn.textContent = "❌ Nicht Experimenteller Modus";
                     searchDeezerFromSpotify(songUrl);
                 }
             });

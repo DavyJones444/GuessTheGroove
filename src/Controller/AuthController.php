@@ -19,20 +19,31 @@ class AuthController extends BaseController {
     public function login() {
         $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $identifier = $_POST['name'] ?? $_POST['email'] ?? ''; // Unterstützt Name oder Email
+            $identifier = $_POST['name'] ?? $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
 
-            // Prüfen ob es eine Email ist
+            // Debugging 1: Was kommt an?
+            // var_dump($identifier, $password); die(); 
+
             $user = filter_var($identifier, FILTER_VALIDATE_EMAIL) 
                 ? $this->userRepo->findByEmail($identifier) 
                 : $this->userRepo->findByName($identifier);
 
+            // Debugging 2: User gefunden?
+            // var_dump($user); die();
+
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
+                
+                // Debugging 3: Session gesetzt?
+                //var_dump($_SESSION); die("Session gesetzt! Weiterleitung...");
+
                 header("Location: /profile");
                 exit;
             } else {
                 $error = "Login fehlgeschlagen. Daten überprüfen.";
+                // Debugging 4: Warum fehlgeschlagen?
+                // var_dump("Passwort falsch oder User null");
             }
         }
         $this->render('auth/login.view.php', ['title' => 'Login', 'error' => $error]);

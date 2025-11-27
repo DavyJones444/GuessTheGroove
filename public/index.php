@@ -8,6 +8,12 @@ $rootPath = rtrim($scriptDir, '/') . '/';
 
 define('ROOT_URL', $rootPath);
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// 3. .env Datei laden (WICHTIG!)
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->safeLoad();
+
 // Autoloader & Config laden (Pfade anpassen!)
 require_once __DIR__ . '/../config/db.php';
 // require_once __DIR__ . '/../vendor/autoload.php'; // Wenn du Composer hast
@@ -55,9 +61,6 @@ switch ($path) {
     // ----------------------------------------------------
     // 3. Login & User (Zukünftige Beispiele)
     // ----------------------------------------------------
-    case '/login':
-        require __DIR__ . '/../templates/auth/login.view.php';
-        break;
     
     case '/profile':
         require_once __DIR__ . '/../src/Controller/ProfileController.php';
