@@ -149,4 +149,54 @@ class CardController extends BaseController {
         }
         exit;
     }
+
+    public function edit($id) {
+        AuthMiddleware::protect();
+        $userId = $_SESSION['user_id'];
+        
+        $card = $this->cardRepo->getCardByIdAndUser($id, $userId);
+        
+        if (!$card) {
+            header("Location: /profile"); // Oder Fehlerseite
+            exit;
+        }
+
+        $this->render('cards/edit.view.php', [
+            'title' => 'Karte bearbeiten',
+            'card' => $card
+        ]);
+    }
+
+    public function update($id) {
+        AuthMiddleware::protect();
+        $userId = $_SESSION['user_id'];
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $_POST;
+            
+            // Plattform ermitteln (Logik in Helper auslagern wäre noch besser)
+            $platform = 'Andere';
+            if (strpos($data['songlink'], 'deezer.com') !== false) $platform = 'Deezer';
+            elseif (strpos($data['songlink'], 'spotify') !== false) $platform = 'Spotify';
+            elseif (strpos($data['songlink'], 'youtu') !== false) $platform = 'YouTube';
+            
+            $data['platform'] = $platform;
+
+            // 1. Metadaten Update
+            $this->cardRepo->update($id, $userId, $data);
+
+            // 2. Bilder neu generieren (Optional: Nur wenn sich Daten geändert haben)
+            // Alte löschen
+            $card = $this->cardRepo->getCardByIdAndUser($id, $userId);
+            $this->qrService->deleteImages($card['image_text'], $card['image_qr']);
+            
+            // Neue erstellen
+            $qrLink = "https://gtg.luda-vision.de/" . $id;
+            $images = $this->qrService->generateCardImages($data['title'], $data['artist'], $data['year'], $qrLink);
+            $this->cardRepo->updateImages($id, $images['image_text'], $images['image_qr']);
+
+            header("Location: /profile");
+            exit;
+        }
+    }
 }

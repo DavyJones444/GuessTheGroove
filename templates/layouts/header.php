@@ -9,7 +9,7 @@ $pageTitle = $viewData['title'] ?? 'Guess The Groove';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="<?= ROOT_URL ?>css/style.css">
     
     <title><?= htmlspecialchars($pageTitle) ?></title>
     
@@ -20,7 +20,7 @@ $pageTitle = $viewData['title'] ?? 'Guess The Groove';
 
 <header class="header-bar">
     <a href="/welcome">
-        <img src="/assets/logo_solo.png" alt="Logo" style="height: 50px;">
+        <img src="/assets/images/logo_solo.png" alt="Logo" style="height: 50px;">
     </a>
 
     <?php if ($currentUser): ?>

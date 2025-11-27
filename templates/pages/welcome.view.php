@@ -83,12 +83,12 @@ include __DIR__ . '/../layouts/header.php';
 </style>
 
 <div id="splash-wrapper">
-  <img src="assets/logo.png" alt="Logo" id="splash-logo">
+  <img src="/public/assets/images/logo.png" alt="Logo" id="splash-logo">
 </div>
 
 <div class="wrapper">
     <div class="welcome-container">
-        <img src="assets/logo.png" alt="Guess the Groove Logo" class="logo-large" id="logo-large">
+        <img src="/public/assets/images/logo.png" alt="Guess the Groove Logo" class="logo-large" id="logo-large">
 
         <h1>Willkommen bei <span style="color: #7da7ff;">Guess the Groove</span></h1>
         <p>
@@ -164,7 +164,7 @@ include __DIR__ . '/../layouts/header.php';
         
         // ACHTUNG: Pfad prüfen! Wenn wir auf public/ umgestellt haben, 
         // und die Bilder in public/uploads/cards liegen:
-        img.src = `uploads/cards/${image}`; 
+        img.src = `/uploads/cards/${image}`; 
         // Falls du die Ordner noch nicht verschoben hast, lass es auf `card/images/`
         
         img.classList.add("floating-card");

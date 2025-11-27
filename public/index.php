@@ -1,6 +1,7 @@
 <?php
 // public/index.php
-
+$rootPath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/';
+define('ROOT_URL', $rootPath);
 // Autoloader & Config laden (Pfade anpassen!)
 require_once __DIR__ . '/../config/db.php';
 // require_once __DIR__ . '/../vendor/autoload.php'; // Wenn du Composer hast
@@ -31,8 +32,9 @@ switch ($path) {
     break;
 
     case '/index.php':
-        require __DIR__ . '/../src/Controller/HomeController.php';
-        // (new HomeController())->index();
+    case '/home':
+        require_once __DIR__ . '/../src/Controller/HomeController.php';
+        (new HomeController($pdo))->index();
         break;
 
     // ----------------------------------------------------
@@ -52,8 +54,13 @@ switch ($path) {
         break;
     
     case '/profile':
-        // CheckLoginMiddleware::verify();
-        require __DIR__ . '/../templates/pages/profile.view.php';
+        require_once __DIR__ . '/../src/Controller/ProfileController.php';
+        (new ProfileController($pdo))->index();
+        break;
+
+    case '/profile/upload': // Route für Bild-Upload
+        require_once __DIR__ . '/../src/Controller/ProfileController.php';
+        (new ProfileController($pdo))->uploadPicture();
         break;
     
     case '/impressum':
@@ -165,6 +172,62 @@ switch ($path) {
     case '/api/youtube/audio':
         require_once __DIR__ . '/../src/Controller/ApiController.php';
         (new ApiController())->youtubeAudio();
+        break;
+    
+    case '/login':
+        require_once __DIR__ . '/../src/Controller/AuthController.php';
+        (new AuthController($pdo))->login();
+        break;
+
+    case '/login/code':
+        require_once __DIR__ . '/../src/Controller/AuthController.php';
+        (new AuthController($pdo))->loginWithCode();
+        break;
+
+    case '/logout':
+        require_once __DIR__ . '/../src/Controller/AuthController.php';
+        (new AuthController($pdo))->logout();
+        break;
+
+    case '/register':
+        require_once __DIR__ . '/../src/Controller/AuthController.php';
+        (new AuthController($pdo))->register();
+        break;
+
+    case '/forgot-password':
+        require_once __DIR__ . '/../src/Controller/AuthController.php';
+        (new AuthController($pdo))->forgotPassword();
+        break;
+
+    case '/reset-password':
+        require_once __DIR__ . '/../src/Controller/AuthController.php';
+        (new AuthController($pdo))->resetPassword();
+        break;
+
+    // ACCOUNT SETTINGS (POST Requests, leiten zurück zum Profil)
+    case '/account/password':
+        require_once __DIR__ . '/../src/Controller/ProfileController.php';
+        (new ProfileController($pdo))->updatePassword();
+        break;
+
+    case '/account/username':
+        require_once __DIR__ . '/../src/Controller/ProfileController.php';
+        (new ProfileController($pdo))->updateUsername();
+        break;
+
+    case '/account/delete':
+        require_once __DIR__ . '/../src/Controller/ProfileController.php';
+        (new ProfileController($pdo))->deleteAccount();
+        break;
+
+    case '/cards/edit':
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->edit($_GET['id'] ?? 0);
+        break;
+
+    case '/cards/update':
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->update($_GET['id'] ?? 0);
         break;
     // ----------------------------------------------------
     // 4. Spezialfall: QR-Code Kurz-URLs (/123)

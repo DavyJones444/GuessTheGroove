@@ -6,6 +6,56 @@ class CardRepository {
         $this->pdo = $pdo;
     }
 
+    public function searchPublicCards($search = '', $platform = '', $year = '', $sort = '') {
+        $sql = "SELECT cards.*, users.name AS creator_name, users.profile_pic, users.id AS creator_id 
+                FROM cards 
+                JOIN users ON cards.user_id = users.id 
+                WHERE is_public = 1";
+
+        $params = [];
+        if ($search) {
+            $sql .= " AND (title LIKE ? OR artist LIKE ?)";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+        if ($platform) {
+            $sql .= " AND platform = ?";
+            $params[] = $platform;
+        }
+        if ($year) {
+            $sql .= " AND year = ?";
+            $params[] = $year;
+        }
+
+        switch ($sort) {
+            case 'oldest': $sql .= " ORDER BY created_at ASC"; break;
+            case 'newest': $sql .= " ORDER BY created_at DESC"; break;
+            case 'title': $sql .= " ORDER BY title ASC"; break;
+            case 'artist': $sql .= " ORDER BY artist ASC"; break;
+            case 'year asc': $sql .= " ORDER BY year ASC"; break;
+            case 'year desc': $sql .= " ORDER BY year DESC"; break;
+            default: $sql .= " ORDER BY created_at DESC";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    // Für Edit Card
+    public function update($id, $userId, $data) {
+        $stmt = $this->pdo->prepare("UPDATE cards SET title = ?, year = ?, artist = ?, songlink = ?, platform = ? WHERE id = ? AND user_id = ?");
+        return $stmt->execute([
+            $data['title'], 
+            $data['year'], 
+            $data['artist'], 
+            $data['songlink'], 
+            $data['platform'], 
+            $id, 
+            $userId
+        ]);
+    }
+
     public function getPublicImages() {
         // Nur öffentliche Karten abrufen
         $stmt = $this->pdo->prepare("SELECT image_text, image_qr FROM cards WHERE is_public = 1 ORDER BY RAND()");
