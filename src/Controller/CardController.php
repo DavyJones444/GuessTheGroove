@@ -31,7 +31,7 @@ class CardController extends BaseController {
             // Fall A: Batch (Playlist)
             if (isset($_POST['batch']) && isset($_POST['tracks'])) {
                 $firstTrack = $_POST['tracks'][0] ?? null;
-                $playlistName = $firstTrack['artist'] ?? 'Neue Playlist';
+                $playlistName = $firstTrack['title'] ?? 'Neue Playlist';
                 
                 $playlistId = $this->cardRepo->createPlaylist($userId, $playlistName);
 

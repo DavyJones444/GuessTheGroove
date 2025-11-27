@@ -146,7 +146,7 @@
 
         // Starte Formular
         let formHTML = `
-            <form method="post" action="../card/create_card_logic.php">
+            <form method="post" action="/cards/store">
                 <input type="hidden" name="batch" value="1">
         `;
 
