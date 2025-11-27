@@ -229,6 +229,11 @@ switch ($path) {
         (new ProfileController($pdo))->deleteAccount();
         break;
 
+    case '/account/email':
+        require_once __DIR__ . '/../src/Controller/ProfileController.php';
+        (new ProfileController($pdo))->updateEmail();
+        break;
+        
     case '/cards/edit':
         require_once __DIR__ . '/../src/Controller/CardController.php';
         (new CardController($pdo))->edit($_GET['id'] ?? 0);

@@ -134,4 +134,22 @@ class ProfileController extends BaseController {
         header("Location: /");
         exit;
     }
+
+    public function updateEmail() {
+        AuthMiddleware::protect();
+        $newEmail = trim($_POST['new_email'] ?? '');
+        
+        if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['message'] = "Ungültige E-Mail-Adresse.";
+        } else {
+            $userRepo = new UserRepository($this->pdo);
+            if ($userRepo->updateEmail($_SESSION['user_id'], $newEmail)) {
+                $_SESSION['message'] = "E-Mail erfolgreich geändert.";
+            } else {
+                $_SESSION['message'] = "Diese E-Mail wird bereits verwendet.";
+            }
+        }
+        header("Location: /profile");
+        exit;
+    }
 }

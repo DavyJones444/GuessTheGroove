@@ -76,4 +76,16 @@ class UserRepository {
         $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
         return $stmt->execute([$userId]);
     }
+
+    public function updateEmail($userId, $newEmail) {
+        // Prüfen, ob Email schon vergeben ist (außer vom User selbst)
+        $stmt = $this->pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+        $stmt->execute([$newEmail, $userId]);
+        if ($stmt->fetch()) {
+            return false; // Email schon vergeben
+        }
+
+        $stmt = $this->pdo->prepare("UPDATE users SET email = ? WHERE id = ?");
+        return $stmt->execute([$newEmail, $userId]);
+    }
 }

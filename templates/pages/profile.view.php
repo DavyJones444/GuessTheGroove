@@ -169,10 +169,27 @@ include __DIR__ . '/../layouts/header.php';
         <h2 class="header-style">Account-Einstellungen</h2>
 
         <div style="max-width: 400px; margin: 0 auto;">
+            
             <div class="div-style">Benutzername ändern</div>
             <form method="post" action="/account/username" class="form-container">
-                <input type="text" name="new_name" placeholder="Neuer Name" required class="input-field">
+                <input type="text" name="new_name" placeholder="Neuer Name" value="<?= htmlspecialchars($user['name']) ?>" required class="input-field">
                 <button type="submit" class="button">Ändern</button>
+            </form>
+
+            <div style="margin: 20px 0;"></div>
+
+            <div class="div-style">E-Mail ändern</div>
+            <form method="post" action="/account/email" class="form-container">
+                <input type="email" name="new_email" placeholder="Neue E-Mail" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required class="input-field">
+                <button type="submit" class="button">Ändern</button>
+            </form>
+
+            <div style="margin: 20px 0;"></div>
+
+            <div class="div-style">Profilbild ändern</div>
+            <form action="/profile/upload" method="post" enctype="multipart/form-data" class="form-container">
+                <input type="file" name="profile_pic" accept="image/*" required class="input-field" style="border: none; padding: 10px 0;">
+                <button type="submit" class="button">Hochladen</button>
             </form>
 
             <div style="margin: 20px 0;"></div>
@@ -199,7 +216,7 @@ include __DIR__ . '/../layouts/header.php';
             </div>
         </div>
     <?php endif; ?>
-
+    
     <div id="playlistModal" class="modal-overlay" style="display:none;">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
