@@ -1,12 +1,12 @@
 <?php
-
+require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../Model/CardRepository.php';
 
-class WelcomeController {
+class WelcomeController extends BaseController{
     private $pdo;
 
     public function __construct($pdo) {
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
     }
 
     public function index() {

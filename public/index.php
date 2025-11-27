@@ -70,7 +70,102 @@ switch ($path) {
         require_once __DIR__ . '/../src/Controller/PageController.php';
         (new PageController($pdo))->contact();
         break;
+    
+    case '/verify':
+    require_once __DIR__ . '/../src/Controller/AuthController.php';
+    (new AuthController($pdo))->verifyEmail();
+    break;
 
+    case '/cards/create':
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->create();
+        break;
+
+    case '/cards/store':
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->store();
+        break;
+
+    case '/cards/delete': // Aufruf meist via /cards/delete?id=123
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->delete($_GET['id'] ?? 0);
+        break;
+
+    case '/cards/download':
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->download($_GET['id'] ?? 0);
+        break;
+
+    case '/cards/status': // AJAX Endpoint
+        require_once __DIR__ . '/../src/Controller/CardController.php';
+        (new CardController($pdo))->updateStatus();
+        break;
+
+    case '/playlists/show': // ?id=123
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->show($_GET['id'] ?? 0);
+        break;
+
+    case '/playlists/create':
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->create();
+        break;
+
+    case '/playlists/delete':
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->delete($_GET['id'] ?? 0);
+        break;
+
+    case '/playlists/update_name': // JSON POST
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->updateName();
+        break;
+
+    case '/playlists/add_card':
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->addCard();
+        break;
+
+    case '/playlists/remove_card':
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->removeCard();
+        break;
+
+    case '/playlists/export':
+        require_once __DIR__ . '/../src/Controller/PlaylistController.php';
+        (new PlaylistController($pdo))->export($_GET['id'] ?? 0);
+        break;
+
+    // API Routen (Proxies)
+    case '/api/deezer/track':
+        require_once __DIR__ . '/../src/Controller/ApiController.php';
+        (new ApiController())->deezerTrack();
+        break;
+
+    case '/api/deezer/search':
+        require_once __DIR__ . '/../src/Controller/ApiController.php';
+        (new ApiController())->deezerSearch();
+        break;
+
+    case '/api/spotify/track':
+        require_once __DIR__ . '/../src/Controller/ApiController.php';
+        (new ApiController())->spotifyTrack();
+        break;
+
+    case '/api/spotify/playlist':
+        require_once __DIR__ . '/../src/Controller/ApiController.php';
+        (new ApiController())->spotifyPlaylist();
+        break;
+
+    case '/api/youtube/info':
+        require_once __DIR__ . '/../src/Controller/ApiController.php';
+        (new ApiController())->youtubeInfo();
+        break;
+
+    case '/api/youtube/audio':
+        require_once __DIR__ . '/../src/Controller/ApiController.php';
+        (new ApiController())->youtubeAudio();
+        break;
     // ----------------------------------------------------
     // 4. Spezialfall: QR-Code Kurz-URLs (/123)
     // ----------------------------------------------------
