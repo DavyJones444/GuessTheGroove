@@ -1,13 +1,14 @@
 <?php
+require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../Model/CardRepository.php';
 require_once __DIR__ . '/../Service/UrlAnalyzer.php';
 
-class PlayController {
+class PlayController extends BaseController{
     private $pdo;
 
     public function __construct($pdo) {
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
     }
 
     public function handleRequest() {
@@ -49,6 +50,11 @@ class PlayController {
         ];
 
         // View laden
-        require __DIR__ . '/../../templates/pages/play.view.php';
+        $this->render('pages/play.view.php', [
+            'songUrl' => $songUrl,
+            'service' => $service,
+            'token' => $token,
+            'title' => 'Spielen' // Titel für den Header
+        ]);
     }
 }

@@ -1,9 +1,3 @@
-
-<?php 
-require __DIR__ . '/lib/db.php';
-session_start();
-include 'header.php'; ?>
-
 <main class="div-style">
     <div>
         <h1 class="header-style">Datenschutzerklärung</h1>
@@ -28,5 +22,3 @@ include 'header.php'; ?>
         </p>
     </div>
 </main>
-
-<?php include 'footer.php'; ?>

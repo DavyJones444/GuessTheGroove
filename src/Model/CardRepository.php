@@ -6,6 +6,13 @@ class CardRepository {
         $this->pdo = $pdo;
     }
 
+    public function getPublicImages() {
+        // Nur öffentliche Karten abrufen
+        $stmt = $this->pdo->prepare("SELECT image_text, image_qr FROM cards WHERE is_public = 1 ORDER BY RAND()");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Holt den Link anhand der ID
     public function findSongLinkById($id) {
         $stmt = $this->pdo->prepare("SELECT songlink FROM cards WHERE id = :id LIMIT 1");

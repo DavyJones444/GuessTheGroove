@@ -24,6 +24,12 @@ switch ($path) {
     // 1. Die Startseite
     // ----------------------------------------------------
     case '/':
+    case '/welcome':
+    require_once __DIR__ . '/../src/Controller/WelcomeController.php';
+    $controller = new WelcomeController($pdo);
+    $controller->index();
+    break;
+
     case '/index.php':
         require __DIR__ . '/../src/Controller/HomeController.php';
         // (new HomeController())->index();
@@ -48,6 +54,21 @@ switch ($path) {
     case '/profile':
         // CheckLoginMiddleware::verify();
         require __DIR__ . '/../templates/pages/profile.view.php';
+        break;
+    
+    case '/impressum':
+        require_once __DIR__ . '/../src/Controller/PageController.php';
+        (new PageController($pdo))->impressum();
+        break;
+
+    case '/datenschutz':
+        require_once __DIR__ . '/../src/Controller/PageController.php';
+        (new PageController($pdo))->privacy();
+        break;
+
+    case '/kontakt':
+        require_once __DIR__ . '/../src/Controller/PageController.php';
+        (new PageController($pdo))->contact();
         break;
 
     // ----------------------------------------------------
