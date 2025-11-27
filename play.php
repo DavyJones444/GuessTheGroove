@@ -112,7 +112,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             exit;
     }
 
-
 $service = '';
 $token = $_SESSION['spotify_token'] ?? null;
 
@@ -496,10 +495,19 @@ include 'header.php';
                 if (code && code.data && code.data.trim() !== "") {
                     stopScanning();
                     const scannedData = code.data.trim();
-
-                    // NEUE LOGIK: Prüfen ob es eine URL mit ID ist
+                    
+                    if (scannedData.includes('gtg.luda-vision.de')) {
+                        // Prüfen, ob Protokoll fehlt und ergänzen
+                        if (!scannedData.startsWith('http://') && !scannedData.startsWith('https://')) {
+                            scannedData = 'https://' + scannedData;
+                        }
+                        // Direkt dorthin navigieren (Browser/Server macht den Rest via .htaccess)
+                        window.location.href = scannedData;
+                        return;
+                    }
+                    // Prüfen ob es eine URL mit ID ist
                     // Wir suchen nach "play.php?id=" oder einfach "?id="
-                    if (scannedData.includes('play.php?id=') || scannedData.includes('?id=')) {
+                    if (scannedData.includes('play.php?id=') || scannedData.includes('?id=') || scannedData.includes('play?id=')) {
                         // Wenn es eine vollständige URL ist, leiten wir direkt weiter
                         if (scannedData.startsWith('http')) {
                             window.location.href = scannedData;
