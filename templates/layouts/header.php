@@ -25,7 +25,7 @@ $pageTitle = $viewData['title'] ?? 'Guess The Groove';
 
     <?php if ($currentUser): ?>
         <div class="header-center">
-            <a href="/" class="header-button btn-explore">Entdecken</a>
+            <a href="/home" class="header-button btn-explore">Entdecken</a>
             <a href="/play" class="header-button btn-play">Spielen</a>
             <a href="/cards/create" class="header-button btn-create">Karte erstellen</a>
         </div>

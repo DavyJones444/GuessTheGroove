@@ -695,4 +695,41 @@ button:hover {
     position: absolute;
   }
   
-  
+
+/* 2. Aktions-Container aufräumen */
+.card-actions {
+    margin-top: auto !important;
+    display: flex;
+    flex-wrap: wrap;    
+    gap: 8px !important;            /* Drückt die Actions immer nach ganz unten */
+    padding-top: 15px;
+}
+
+/* 3. Alle Icons und Links gleich behandeln */
+.card-actions a,
+.card-actions span {
+    margin-top: auto !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;                   /* Feste Klick-Fläche */
+    height: 32px;
+    margin: 0 !important;          /* WICHTIG: Globales a-Margin überschreiben! */
+    padding: 0;
+    border-radius: 50%;            /* Runde Hover-Effekte */
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+/* Hover-Effekt für bessere UX */
+.card-actions a:hover,
+.card-actions span:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.card {
+    display: flex !important;
+    flex-direction: column !important; /* Wichtig: Zieht die Karte auf die volle Höhe der Grid-Zeile */
+    min-height: 350px;       /* Optional: Eine Mindesthöhe für alle Karten */
+    justify-content: space-between; /* Verteilt den Inhalt */
+}

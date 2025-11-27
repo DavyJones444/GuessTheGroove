@@ -88,38 +88,42 @@ include __DIR__ . '/../layouts/header.php';
                                     </div>
                                 </div>
 
-                                <div style="margin-top: 10px;"></div>
+                                <div style="margin: 10px 0;"></div>
                                 <p><strong><?= htmlspecialchars($card['title']) ?></strong> (<?= htmlspecialchars($card['year']) ?>)</p>
-                                <p><?= htmlspecialchars($card['artist']) ?> – <?= htmlspecialchars($card['platform']) ?></p>
+                                <p><small><?= htmlspecialchars($card['artist']) ?> – <?= htmlspecialchars($card['platform']) ?></small></p>
 
-                                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px; align-items: center;">
-                                    <a href="<?= htmlspecialchars($card['songlink']) ?>" target="_blank" title="Zum Song">
-                                        <img src="/assets/icons/music_note.svg" style="width: 20px;">
+                                <div class="card-actions" style="display: flex; justify-content: center; gap: 15px; margin-top: 15px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px;">
+                                    
+                                    <a href="<?= htmlspecialchars($card['songlink']) ?>" target="_blank" title="Song anhören" rel="noopener noreferrer">
+                                        <img src="<?= ROOT_URL ?>assets/icons/music_note.svg" style="width: 24px; height: 24px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                                     </a>
 
-                                    <a href="/cards/download?id=<?= $card['id'] ?>" title="Download">
-                                        <img src="/assets/icons/download.svg" style="width: 20px;">
+                                    <a href="/cards/download?id=<?= $card['id'] ?>" title="Karte herunterladen">
+                                        <img src="/assets/icons/download.svg" style="width: 24px; height: 24px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                                     </a>
 
                                     <?php if ($isOwner): ?>
                                         <a href="/cards/edit?id=<?= $card['id'] ?>" title="Bearbeiten">
-                                            <img src="/assets/icons/edit.svg" style="width: 20px;">
+                                            <img src="/assets/icons/edit.svg" style="width: 24px; height: 24px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                                         </a>
 
                                         <span class="status-toggle" 
-                                              onclick="togglePublicStatus(<?= $card['id'] ?>, this)"
-                                              data-status="<?= $card['is_public'] ?>"
-                                              title="<?= $card['is_public'] ? 'Öffentlich' : 'Privat' ?>"
-                                              style="cursor: pointer;">
-                                            <img src="/assets/icons/<?= $card['is_public'] ? 'public.svg' : 'public_off.svg' ?>" style="width: 20px;">
+                                            onclick="togglePublicStatus(<?= $card['id'] ?>, this)"
+                                            data-status="<?= $card['is_public'] ?>"
+                                            title="<?= $card['is_public'] ? 'Öffentlich sichtbar' : 'Nur für mich privat' ?>"
+                                            style="cursor: pointer;">
+                                            <img src="/assets/icons/<?= $card['is_public'] ? 'public.svg' : 'public_off.svg' ?>" 
+                                                style="width: 24px; height: 24px; transition: transform 0.2s;" 
+                                                onmouseover="this.style.transform='scale(1.2)'" 
+                                                onmouseout="this.style.transform='scale(1)'">
                                         </span>
 
-                                        <a onclick="openPlaylistModal(<?= $card['id'] ?>)" title="Zu Playlist" style="cursor: pointer;">
-                                            <img src="/assets/icons/playlist_add.svg" style="width: 20px;">
-                                        </a>
+                                        <span onclick="openPlaylistModal(<?= $card['id'] ?>)" title="Zu Playlist hinzufügen" style="cursor: pointer;">
+                                            <img src="/assets/icons/playlist_add.svg" style="width: 24px; height: 24px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                        </span>
 
-                                        <a href="/cards/delete?id=<?= $card['id'] ?>" onclick="return confirm('Wirklich löschen?');" title="Löschen">
-                                            <img src="/assets/icons/delete.svg" style="width: 20px;">
+                                        <a href="/cards/delete?id=<?= $card['id'] ?>" onclick="return confirm('Möchtest du diese Karte wirklich unwiderruflich löschen?');" title="Löschen">
+                                            <img src="/assets/icons/delete.svg" style="width: 24px; height: 24px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                                         </a>
                                     <?php endif; ?>
                                 </div>

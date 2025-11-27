@@ -5,14 +5,12 @@ require_once __DIR__ . '/../Model/CardRepository.php';
 require_once __DIR__ . '/../Service/UrlAnalyzer.php';
 
 class PlayController extends BaseController{
-    private $pdo;
 
     public function __construct($pdo) {
         parent::__construct($pdo);
     }
 
     public function handleRequest() {
-        session_start();
         $repo = new CardRepository($this->pdo);
         
         $songUrl = $_GET['url'] ?? '';

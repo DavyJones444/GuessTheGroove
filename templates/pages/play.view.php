@@ -2,7 +2,7 @@
 
 <div class="wrapper">
     <h2 class="header-style">Musikquiz Player</h2>
-
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
     <form method="get" id="urlForm" style="display: none;">
         <input type="text" name="url" value="<?= htmlspecialchars($viewData['songUrl']) ?>" >
         <button type="submit">Laden</button>
@@ -10,6 +10,15 @@
 
     <div class="div-style">
         <button id="scanBtn" class="button" onclick="startScanning()">Scan QR Code</button>
+    </div>
+
+    <div id="qr-overlay" style="display: none;">
+        <div>
+            <p>QR-Code scannen...</p>
+            <video id="qr-video" autoplay playsinline></video>
+            <canvas id="qr-canvas" style="display:none;"></canvas>
+            <button id="cancelBtn" onclick="cancelScanning()">Abbrechen</button>
+        </div>
     </div>
 
     <div id="player-container"></div>
@@ -234,9 +243,12 @@
 
 
     function tick() {
-    if (!scanActive) return;
+    if (!scanActive) 
+        log("inactive...");
+        return;
 
     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+        log("active");
         canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
         const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
         const code = jsQR(imageData.data, imageData.width, imageData.height, {
