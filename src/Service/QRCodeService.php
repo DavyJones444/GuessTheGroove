@@ -54,7 +54,7 @@ class QRCodeService {
         imagedestroy($qrImage);
 
         // QR Hintergrund laden
-        $qrBgImage = imagecreatefrompng(__DIR__ . '/../../public/assets/qr_background.png');
+        $qrBgImage = imagecreatefrompng(__DIR__ . '/../../public/assets/images/qr_background.png');
         $destX = (imagesx($qrBgImage) - $qrNewWidth) / 2 - 5;
         $destY = (imagesy($qrBgImage) - $qrNewHeight) / 2 - 2;
         imagecopy($qrBgImage, $qrScaled, $destX, $destY, 0, 0, $qrNewWidth, $qrNewHeight);
