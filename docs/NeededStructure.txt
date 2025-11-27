@@ -1,0 +1,96 @@
+GuessTheGroove/
+│
+├── .env                        <-- Deine Passwörter (DB-Zugang, API Keys)
+├── .gitignore                  <-- Ignoriert vendor/, .env, uploads/
+├── composer.json               <-- Deine Libraries (PHPMailer, TCPDF etc.)
+├── README.md
+│
+├── bin/                        <-- Externe Programme
+│   └── yt-dlp.exe              <-- Dein YouTube Downloader
+│
+├── config/                     <-- Globale Einstellungen
+│   ├── db.php                  <-- Stellt die $pdo Verbindung her
+│   └── app.php                 <-- Konstanten (z.B. BASE_URL, DEBUG_MODE)
+│
+├── database/                   <-- SQL Backups & Migrationen
+│   └── schema.sql              <-- Ehemals guess_the_groove_db.sql
+│
+├── lib/                        <-- Alte Libraries (falls nicht via Composer)
+│   └── phpqrcode/              <-- Deine QR-Code Lib (oder besser via Composer ersetzen)
+│
+├── public/                     <-- DOCUMENT ROOT (Nur das sieht das Internet!)
+│   ├── .htaccess               <-- Leitet alle Anfragen an index.php
+│   ├── index.php               <-- Der Haupt-Eingang (Router)
+│   │
+│   ├── assets/                 <-- Statische Dateien
+│   │   ├── backgrounds/        <-- Deine Hintergrundbilder
+│   │   ├── fonts/              <-- maison-neue-bold.ttf
+│   │   └── icons/              <-- SVG & PNG Icons
+│   │
+│   ├── css/
+│   │   ├── style.css           <-- Haupt-Design
+│   │   └── playlist.css        <-- Ehemals style2.css
+│   │
+│   ├── js/
+│   │   ├── scanner.js          <-- Die QR-Code Scan Logik (aus play.php)
+│   │   └── player.js           <-- Die Audio-Player Logik
+│   │
+│   └── uploads/                <-- Vom User generierte Inhalte
+│       ├── profile_pics/
+│       └── cards/              <-- Ehemals card/images/ (QR & Text Bilder)
+│
+├── src/                        <-- DEIN PHP KERN (Die Logik)
+│   ├── Controller/             <-- Steuert die Seiten
+│   │   ├── AuthController.php  <-- Login, Register, Logout, ForgotPW
+│   │   ├── CardController.php  <-- Create, Edit, Delete, Download Card
+│   │   ├── HomeController.php  <-- Dashboard / Startseite
+│   │   ├── PlayController.php  <-- Die Logik für den Player
+│   │   ├── PlaylistController.php <-- Playlist Logik
+│   │   └── ProfileController.php <-- Profil bearbeiten, Bild hochladen
+│   │
+│   ├── Middleware/             <-- Schutzmechanismen
+│   │   └── AuthMiddleware.php  <-- Prüft: "Ist User eingeloggt?"
+│   │
+│   ├── Model/                  <-- Datenbank-Zugriffe
+│   │   ├── CardRepository.php  <-- SQL für Karten
+│   │   ├── PlaylistRepository.php <-- SQL für Playlists
+│   │   └── UserRepository.php  <-- SQL für User
+│   │
+│   └── Service/                <-- Helfer-Klassen
+│       ├── MailerService.php   <-- Versendet E-Mails (PHPMailer Wrapper)
+│       ├── QRCodeService.php   <-- Generiert die QR-Bilder
+│       ├── UrlAnalyzer.php     <-- Erkennt Spotify/Deezer/Hitster Links
+│       └── YouTubeService.php  <-- Wrapper für yt-dlp.exe
+│
+├── templates/                  <-- DEIN HTML (Die Views)
+│   ├── layouts/                <-- Wiederkehrende Teile
+│   │   ├── header.php
+│   │   ├── footer.php
+│   │   └── navigation.php
+│   │
+│   ├── auth/                   <-- Login/Register Seiten
+│   │   ├── login.view.php
+│   │   ├── register.view.php
+│   │   ├── forgot_password.view.php
+│   │   └── reset_password.view.php
+│   │
+│   ├── cards/                  <-- Karten-Verwaltung
+│   │   ├── create.view.php
+│   │   └── edit.view.php
+│   │
+│   ├── pages/                  <-- Allgemeine Seiten
+│   │   ├── home.view.php
+│   │   ├── play.view.php       <-- Der Player (HTML)
+│   │   ├── profile.view.php
+│   │   ├── contact.view.php
+│   │   ├── privacy.view.php
+│   │   └── impressum.view.php
+│   │
+│   └── playlist/               <-- Playlist Seiten
+│       ├── list.view.php
+│       └── detail.view.php
+│
+└── vendor/                     <-- Composer Ordner (NICHT anfassen!)
+    ├── phpmailer/
+    ├── setasign/
+    └── ...

@@ -1,0 +1,22 @@
+# Datei: /GuessTheGroove/public/.htaccess
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /public/
+
+    # 1. CORS Headers erlauben (gut für spätere APIs oder Fetch-Requests)
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+    </IfModule>
+
+    # 2. Ignoriere echte Dateien und Ordner
+    # Wenn die angeforderte Datei physisch existiert (z.B. css/style.css), liefer sie aus!
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 3. ALLES ANDERE geht an die index.php
+    # [QSA] = Query String Append (behält ?id=123 bei)
+    # [L] = Last Rule
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
