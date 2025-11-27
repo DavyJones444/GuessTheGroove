@@ -142,12 +142,19 @@
 
         if (data.error) return alert("Fehler: " + data.error);
 
+        const playlistName = data.name ? data.name.replace(/"/g, '&quot;') : "Meine Playlist";
+
         const trackContainer = document.getElementById("track-forms");
 
         // Starte Formular
         let formHTML = `
             <form method="post" action="/cards/store">
                 <input type="hidden" name="batch" value="1">
+            
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 20px;">
+                    <label style="font-size: 1.2rem; font-weight: bold;">Name der neuen Playlist:</label><br>
+                    <input type="text" name="playlist_name" value="${playlistName}" class="input-field" style="width: 100%; margin-top: 5px;">
+                </div>
         `;
 
         const tracks = data.tracks.items;

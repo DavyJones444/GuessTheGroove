@@ -13,7 +13,21 @@ class MailerService {
      * @param string $body Inhalt
      * @param array|null $replyTo Optional: ['email' => '...', 'name' => '...']
      */
-    public function sendMail($to, $subject, $body, $replyTo = null) {
+    private function renderTemplate($subject, $headline, $content, $buttonUrl = null, $buttonText = null) {
+        // Output Buffering starten, um die Datei in eine Variable zu speichern
+        ob_start();
+        
+        // Diese Variablen sind im Template verfügbar:
+        // $subject, $headline, $content, $buttonUrl, $buttonText (aus den Parametern)
+        
+        // Template laden
+        require __DIR__ . '/../../templates/mail/default.php';
+        
+        // Inhalt des Buffers zurückgeben und Buffer löschen
+        return ob_get_clean();
+    }
+
+    public function sendMail($to, $subject, $bodyHtml, $altBodyText, $replyTo = null) {
         $mail = new PHPMailer(true);
 
         try {
@@ -40,8 +54,10 @@ class MailerService {
             }
 
             // Inhalt
+            $mail->isHTML(true);
             $mail->Subject = $subject;
-            $mail->Body    = $body;
+            $mail->Body    = $bodyHtml;      // Das schöne HTML Design
+            $mail->AltBody = $altBodyText;   // Fallback für Text-only Clients
 
             $mail->send();
             return true;
@@ -53,32 +69,39 @@ class MailerService {
     }
 
     // Spezielle E-Mail für Verifizierung
-    public function sendVerificationEmail($email, $token) {
+    public function sendVerificationEmail($name, $email, $token) {
         $baseUrl = $_ENV['APP_URL'] ?? 'http://localhost';
         $verificationLink = rtrim($baseUrl, '/') . "/verify?token=$token";
         
-        $subject = 'Bitte bestätige deine E-Mail-Adresse';
-        $body = "Hallo,\n\nbitte klicke auf den folgenden Link, um deine E-Mail-Adresse zu bestätigen:\n$verificationLink";
+        $subject = 'E-Mail Bestätigung';
+        $headline = 'Willkommen bei Guess The Groove!';
+        $content = "Hallo $name,\n\nschön, dass du dabei bist! Bitte bestätige deine E-Mail-Adresse, um dein Konto vollständig zu aktivieren.";
+        
+        // 1. HTML generieren
+        $htmlBody = $this->renderTemplate($subject, $headline, $content, $verificationLink, 'E-Mail bestätigen');
+        
+        // 2. Text-Version generieren (für alte Clients)
+        $textBody = "$headline\n\n$content\n\nLink: $verificationLink";
 
-        return $this->sendMail($email, $subject, $body);
+        return $this->sendMail($email, $subject, $htmlBody, $textBody);
     }
 
     // Kontaktformular E-Mail
     public function sendContactMail($fromName, $fromEmail, $message) {
-        // Empfänger ist der Admin (also du selbst oder die SMTP Adresse)
-        // Du kannst das auch in die .env auslagern als CONTACT_RECEIVER
-        $to = "hitstercustoms@gmail.com"; 
+        $to = "hitstercustoms@gmail.com"; // Oder $_ENV['ADMIN_EMAIL']
+        $subject = "Kontaktanfrage von $fromName";
+        $headline = "Neue Nachricht";
         
-        $subject = "Neue Kontaktanfrage von $fromName";
+        $content = "Du hast eine neue Nachricht über das Kontaktformular erhalten.\n\n" . 
+                   "<strong>Name:</strong> $fromName\n" . 
+                   "<strong>E-Mail:</strong> $fromEmail\n\n" . 
+                   "<strong>Nachricht:</strong>\n" . nl2br(htmlspecialchars($message));
+
+        // Hier kein Button nötig
+        $htmlBody = $this->renderTemplate($subject, $headline, $content);
         
-        // Nachricht zusammenbauen
-        $body = "Neue Nachricht über das Kontaktformular:\n\n";
-        $body .= "Name: $fromName\n";
-        $body .= "E-Mail: $fromEmail\n\n";
-        $body .= "Nachricht:\n$message";
-        
-        // Wir übergeben den Absender als Reply-To
-        // Damit nutzt er SMTP, aber du klickst auf "Antworten" und schreibst dem Nutzer
-        return $this->sendMail($to, $subject, $body, ['email' => $fromEmail, 'name' => $fromName]);
+        $textBody = "Neue Nachricht von $fromName ($fromEmail):\n\n$message";
+
+        return $this->sendMail($to, $subject, $htmlBody, $textBody, ['email' => $fromEmail, 'name' => $fromName]);
     }
 }

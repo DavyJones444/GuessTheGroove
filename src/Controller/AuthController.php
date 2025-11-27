@@ -118,7 +118,7 @@ class AuthController extends BaseController {
                 $this->userRepo->create($name, $email, $hash, $token);
                 
                 $mailer = new MailerService();
-                $mailer->sendVerificationEmail($email, $token);
+                $mailer->sendVerificationEmail($name, $email, $token);
                 
                 $message = "Registrierung erfolgreich! Bitte E-Mail bestätigen.";
             }

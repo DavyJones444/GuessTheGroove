@@ -243,6 +243,24 @@ switch ($path) {
         require_once __DIR__ . '/../src/Controller/CardController.php';
         (new CardController($pdo))->update($_GET['id'] ?? 0);
         break;
+    
+    // --- DEV: E-Mail Vorschau ---
+    case '/email-preview':
+        // Test-Daten simulieren
+        $subject = 'Vorschau: E-Mail Bestätigung';
+        $headline = 'Willkommen bei Guess The Groove!';
+        $name = 'Davy';
+        $content = "Hallo $name,\n\nschön, dass du dabei bist! Das ist eine Vorschau deiner HTML-E-Mail.\nWir nutzen Tabellen-Layouts, damit es auch in Outlook gut aussieht.";
+        
+        $buttonUrl = '/verify?token=test123456';
+        $buttonText = 'Jetzt bestätigen';
+        
+        // Mock für Base URL (falls .env nicht geladen wäre, hier zur Sicherheit)
+        $_ENV['APP_URL'] = $_ENV['APP_URL'] ?? 'http://localhost/GuessTheGroove/public';
+
+        // Template laden und direkt anzeigen
+        require __DIR__ . '/../templates/mail/default.php';
+        break;
     // ----------------------------------------------------
     // 4. Spezialfall: QR-Code Kurz-URLs (/123)
     // ----------------------------------------------------

@@ -31,7 +31,10 @@ class CardController extends BaseController {
             // Fall A: Batch (Playlist)
             if (isset($_POST['batch']) && isset($_POST['tracks'])) {
                 $firstTrack = $_POST['tracks'][0] ?? null;
-                $playlistName = $firstTrack['title'] ?? 'Neue Playlist';
+                $playlistName = trim($_POST['playlist_name'] ?? '');
+                if (empty($playlistName)) {
+                    $playlistName = 'Importierte Playlist';
+                }
                 
                 $playlistId = $this->cardRepo->createPlaylist($userId, $playlistName);
 
