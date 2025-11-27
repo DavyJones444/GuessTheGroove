@@ -157,34 +157,35 @@ include 'header.php';
 <script>
     document.body.classList.add("lock-scroll");
 
-    window.addEventListener("wheel", () => {
-    const splashLogo = document.getElementById("splash-logo");
-    const staticLogo = document.getElementById("logo-large");
-
-    const splashRect = splashLogo.getBoundingClientRect();
-    const targetRect = staticLogo.getBoundingClientRect();
-
-    // Differenz berechnen
-    const deltaX = targetRect.left - splashRect.left;
-    const deltaY = targetRect.top - splashRect.top;
-    const scale = targetRect.width / splashRect.width;
-
-    // Transformation setzen
-    splashLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
-
-    // Splash langsam ausblenden
-    setTimeout(() => {
-        document.getElementById("splash-wrapper").style.opacity = "0";
-        setTimeout(() => {
-        document.getElementById("splash-wrapper").remove();
-        document.body.classList.remove("lock-scroll");
-        }, 500);
-    }, 800);
-    });
+    window.addEventListener("wheel", startZoomAnimation, { once: true});
+    window.addEventListener("click", startZoomAnimation, { once: true});
 
     const images = <?= json_encode($publicImages) ?>;
     let index = 0;
     let side = 'left';
+
+    function startZoomAnimation() {
+        const splashLogo = document.getElementById("splash-logo");
+        const staticLogo = document.getElementById("logo-large");
+
+        const splashRect = splashLogo.getBoundingClientRect();
+        const targetRect = staticLogo.getBoundingClientRect();
+
+        const deltaX = targetRect.left - splashRect.left;
+        const deltaY = targetRect.top - splashRect.top;
+        const scale = targetRect.width / splashRect.width;
+
+        splashLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+
+        setTimeout(() => {
+            document.getElementById("splash-wrapper").style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById("splash-wrapper").remove();
+                document.body.classList.remove("lock-scroll");
+            }, 500);
+        }, 800);
+    }
+
 
     function createFloatingCard(currentSide) {
         if (images.length === 0) return;

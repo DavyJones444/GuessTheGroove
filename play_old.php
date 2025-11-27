@@ -2,36 +2,7 @@
 require __DIR__ . '/lib/db.php';
 session_start();
 
-// Initialisierung
-$songUrl = '';
-
-// 1. NEUE LOGIK: Prüfen, ob eine ID übergeben wurde
-if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $cardId = $_GET['id'];
-    
-    // ANPASSEN: Hier musst du deinen Tabellennamen und Spaltennamen eintragen
-    // Ich gehe davon aus, dass $pdo in 'lib/db.php' definiert wurde.
-    // Beispiel: Tabelle heißt 'cards', Spalte mit dem Link heißt 'song_url'
-    try {
-        $stmt = $pdo->prepare("SELECT songlink FROM cards WHERE id = :id LIMIT 1");
-        $stmt->execute(['id' => $cardId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($result) {
-            $songUrl = $result['songlink'];
-        } else {
-            // Optional: Fehlermeldung, wenn ID nicht gefunden wurde
-            echo "<script>alert('Karte mit ID $cardId nicht gefunden.');</script>";
-        }
-    } catch (PDOException $e) {
-        die("Datenbankfehler: " . $e->getMessage());
-    }
-} else {
-    // Fallback: Wenn keine ID, schaue ob direkt eine URL übergeben wurde (alte Methode)
-    $songUrl = $_GET['url'] ?? '';
-}
-
-// --- Ab hier läuft alles fast wie bisher, da $songUrl nun gefüllt ist ---
+$songUrl = $_GET['url'] ?? '';
 
     // Hitster-Link erkennen (mit beliebiger Länderkennung)
     if (preg_match('/hitstergame\.com\/[a-z]{2}(-[a-z]{2})?\/\d{5}/i', $songUrl)) {
@@ -90,8 +61,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                     if (!isMobile) return;
 
                     const deeplink = 'hitster://$hitsterLang/$hitsterId';
-                    // Hier ggf. die IP anpassen oder dynamisch machen
-                    const fallbackUrl = window.location.href.split('?')[0]; 
+                    const fallbackUrl = 'https://192.168.0.101/play.php';
                     const now = Date.now();
 
                     // Wenn App nicht geöffnet → redirect zur Webseite
@@ -119,8 +89,7 @@ $token = $_SESSION['spotify_token'] ?? null;
 // Dienste erkennen
 if (strpos($songUrl, 'youtube.com') !== false || strpos($songUrl, 'youtu.be') !== false) {
     $service = 'youtube';
-} elseif (strpos($songUrl, 'spotify.com') !== false || strpos($songUrl, 'spotify.com') !== false) {
-    // Habe spotify.com hinzugefügt, falls der Link direkt aus der DB kommt und nicht via Proxy
+} elseif (strpos($songUrl, 'spotify.com') !== false) {
     $service = 'spotify';
 } elseif (strpos($songUrl, 'deezer.com') !== false) {
     $service = 'deezer';
@@ -216,7 +185,6 @@ include 'header.php';
 <body>
     <div class="wrapper">
         <h2 class="header-style">Musikquiz Player</h2>
-        
         <form method="get" id="urlForm" style="display: none;">
             <input type="text" name="url" value="<?= htmlspecialchars($songUrl) ?>" placeholder="YouTube, Spotify oder Deezer Link" size="60">
             <button type="submit">Laden</button>
@@ -230,6 +198,7 @@ include 'header.php';
             <button id="scanBtn" class="button" onclick="startScanning()">Scan QR Code</button>
         </div>
 
+        <!-- QR-Code Scanner Overlay -->
         <div id="qr-overlay">
             <div>
             <p>QR-Code scannen...</p>
@@ -277,8 +246,8 @@ include 'header.php';
         let player, deviceId;
 
         function toggleButton() {
-            isPlaying = !isPlaying;
-            btn.textContent = isPlaying ? '⏹️ Stopp' : '▶️ Start';
+        isPlaying = !isPlaying;
+        btn.textContent = isPlaying ? '⏹️ Stopp' : '▶️ Start';
         }
 
         function loadYouTube(url) {
@@ -484,56 +453,41 @@ include 'header.php';
 
 
         function tick() {
-            if (!scanActive) return;
+        if (!scanActive) return;
 
-            if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-                const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "invertFirst"
-                });
+        if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+            canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+            const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "invertFirst"
+            });
 
-                if (code && code.data && code.data.trim() !== "") {
-                    stopScanning();
-                    const scannedData = code.data.trim();
-
-                    // NEUE LOGIK: Prüfen ob es eine URL mit ID ist
-                    // Wir suchen nach "play.php?id=" oder einfach "?id="
-                    if (scannedData.includes('play.php?id=') || scannedData.includes('?id=')) {
-                        // Wenn es eine vollständige URL ist, leiten wir direkt weiter
-                        if (scannedData.startsWith('http')) {
-                            window.location.href = scannedData;
-                        } else {
-                            // Falls der QR Code nur "play.php?id=XX" enthält (ohne https://...)
-                            window.location.href = scannedData;
-                        }
-                    } else {
-                        // Alte Logik (Falls QR Code direkt einen Songlink enthält)
-                        document.querySelector('input[name="url"]').value = scannedData;
-                        document.getElementById('urlForm').submit();
-                    }
-                    return;
-                }
+            if (code && code.data && code.data.trim() !== "") {
+                stopScanning();
+                document.querySelector('input[name="url"]').value = code.data.trim();
+                document.getElementById('urlForm').submit();
+                return;
             }
+        }
 
-            requestAnimationFrame(tick);
+        requestAnimationFrame(tick);
         }
 
         function stopScanning() {
-            scanActive = false;
-            document.getElementById('qr-overlay').style.display = 'none';
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-                videoStream = null;
-            }
+        scanActive = false;
+        document.getElementById('qr-overlay').style.display = 'none';
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+        }
         }
 
         function cancelScanning() {
-            stopScanning();
+        stopScanning();
         }
 
         if (songUrl) {
-            btn.style.display = 'inline-block';
+        btn.style.display = 'inline-block';
         }
 
         if (service === 'spotify') {
@@ -542,18 +496,14 @@ include 'header.php';
             document.getElementById('spotify-embed-div').style.display = 'flex';
             document.getElementById('spotify-embed').style.display = 'flex';
             const match = songUrl.match(/track\/([a-zA-Z0-9]+)/);
-            
-            if (match) {
-                const trackId = match[1];
-                document.getElementById('spotify-embed').src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator`;
-                // Standardmäßig verstecken für experimentellen Modus
-                document.getElementById('spotify-embed').style.display = 'none';
-                searchDeezerFromSpotify(songUrl);
-            } else {
-                 loadingOverlay.style.display = 'none';
-                 alert("Ungültiger Spotify-Link");
-            }
-            
+                        if (!match) {
+                            loadingOverlay.style.display = 'none';
+                            alert("Ungültiger Spotify-Link");
+                        }
+                        const trackId = match[1];
+                        document.getElementById('spotify-embed').src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator`;
+            document.getElementById('spotify-embed').style.display = 'none';
+            searchDeezerFromSpotify(songUrl);
         } else if (service === 'youtube') loadYouTube(songUrl);
         else if (service === 'deezer') loadDeezer(songUrl);
 
