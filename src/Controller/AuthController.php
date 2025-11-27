@@ -37,7 +37,6 @@ class AuthController extends BaseController {
                 
                 // Debugging 3: Session gesetzt?
                 //var_dump($_SESSION); die("Session gesetzt! Weiterleitung...");
-
                 header("Location: /profile");
                 exit;
             } else {

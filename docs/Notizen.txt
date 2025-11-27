@@ -1,0 +1,9 @@
+DInge die beim Übertragen auf den Server geändert werden müssen:
+.env Datei anpassen, vorallem DB Zugangsdaten!
+
+$host = 'db'; // default: localhost | for homeserver only: db
+$db   = 'guess_the_groove_db'; // default: guess_the_groove | for homeserver only: guess_the_groove_db
+$user = 'myuser'; // default: root | for homeserver only: myuser
+$pass = 'mypass'; // default: '' | for homeserver only: mypass
+
+Standardlink für Mails anpassen

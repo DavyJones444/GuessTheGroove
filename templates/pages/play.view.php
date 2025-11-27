@@ -22,17 +22,10 @@
     </div>
 
     <div id="player-container"></div>
-    
-    <div class="div-style" id="spotify-text-div" style="margin-top:20px; display:none;">
-        Der Player nutzt standardmäßig den Experimentellen Modus. <br>
-        Dabei werden Titel und Interpret aus Spotify gelesen und bei Deezer gesucht.<br>
-        Dadurch ist ein Abspielen ohne Titelanzeige möglich.<br>
-        Nutze bei Fehlern den Nicht Experimentellen Modus.
-    </div>
 
     <div class="div-style" id="spotify-button-div" style="margin-top:20px; display:none;">
         <div style="margin-top: 10px;">
-            <button id="experimentalBtn" class="button">❌ Nicht Experimenteller Modus</button>
+            <button id="experimentalBtn" class="button">❌ Bei Fehler hier klicken</button>
         </div>
     </div>
 
@@ -148,7 +141,8 @@
                     stopScanning();
                     // WICHTIG: Wir leiten LOKAL weiter, egal was im QR Code stand!
                     // window.location.search ersetzt nur den "?..." Teil der URL
-                    window.location.search = '?id=' + extractedId;
+                    window.location.url = "https://gtg.luda-vision.de/" + extractedId;
+                    //window.location.search = '?id=' + extractedId;
                     return;
                 }
 
