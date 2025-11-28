@@ -2,6 +2,7 @@
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../Model/CardRepository.php';
+require_once __DIR__ . '/../Model/HitsterRepository.php';
 require_once __DIR__ . '/../Service/UrlAnalyzer.php';
 
 class PlayController extends BaseController{
@@ -25,15 +26,28 @@ class PlayController extends BaseController{
             }
         }
 
-        // 2. Check Hitster
+        // 2. Check Hitster (Original Karten)
         if (UrlAnalyzer::isHitster($songUrl)) {
             $details = UrlAnalyzer::getHitsterDetails($songUrl);
-            $hitsterId = htmlspecialchars($details['id']);
-            $hitsterLang = htmlspecialchars($details['lang']);
-            
-            // Lade spezielles Template und beende
-            require __DIR__ . '/../../templates/pages/hitster.view.php';
-            return; 
+            $hitsterId = $details['id']; // z.B. "00253"
+
+            // NEU: Prüfen ob wir ein Mapping in der Datenbank haben
+            $hitsterRepo = new HitsterRepository($this->pdo);
+            $mappedUrl = $hitsterRepo->findByHitsterId($hitsterId);
+
+            if ($mappedUrl) {
+                // TREFFER! Wir nutzen den gemappten Songlink
+                // und lassen den Code weiterlaufen, als wäre es ein normaler Spotify/Deezer Link
+                $songUrl = $mappedUrl;
+            } else {
+                // KEIN Treffer -> Original Hitster Verhalten (App Link anzeigen)
+                $this->render('pages/hitster.view.php', [
+                    'title' => 'Original Hitster Karte',
+                    'hitsterId' => $hitsterId,
+                    'originalUrl' => $songUrl // Die gescannte URL (z.B. hitstergame.com/...)
+                ]);
+                return; // Abbruch, da wir eine andere View zeigen
+            }
         }
 
         // 3. Normaler Player

@@ -108,7 +108,7 @@
             canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
             const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
             
-            if (typeof jsQR === 'undefined') return; // Sicherheitscheck
+            if (typeof jsQR === 'undefined') return;
 
             const code = jsQR(imageData.data, imageData.width, imageData.height, {
                 inversionAttempts: "attemptBoth"
@@ -118,48 +118,46 @@
                 const scannedData = code.data.trim();
                 console.log("Gescannter Code:", scannedData);
 
-                // --- HIER IST DIE KORRIGIERTE LOGIK ---
-                let extractedId = null;
-
-                // 1. Suche nach "id=123" (fängt play.php?id=123)
-                const paramMatch = scannedData.match(/[?&]id=(\d+)/);
-                
-                // 2. Suche nach "/123" am Ende (fängt gtg.luda-vision.de/123)
-                // Wir prüfen explizit auf DEINE Domain, um Verwechslungen zu vermeiden
+                // --- 1. EIGENE DOMAIN (Lokal bleiben) ---
                 const isMyDomain = scannedData.includes('gtg.luda-vision.de') || scannedData.includes('localhost');
-                const pathMatch = scannedData.match(/\/(\d+)(\/|$)/); // Zahl gefolgt von Slash oder Ende
+                const pathMatch = scannedData.match(/\/(\d+)(\/|$)/); // Zahl im Pfad
+                const paramMatch = scannedData.match(/[?&]id=(\d+)/); // ?id=...
 
-                if (paramMatch) {
-                    extractedId = paramMatch[1];
-                } else if (isMyDomain && pathMatch) {
-                    extractedId = pathMatch[1];
-                } else if (/^\d+$/.test(scannedData)) {
-                    extractedId = scannedData; // Einfach nur eine Zahl gescannt
-                }
+                // ID extrahieren
+                let extractedId = null;
+                if (paramMatch) extractedId = paramMatch[1];
+                else if (isMyDomain && pathMatch) extractedId = pathMatch[1];
+                else if (/^\d+$/.test(scannedData)) extractedId = scannedData;
 
                 if (extractedId) {
                     stopScanning();
-                    // WICHTIG: Wir leiten LOKAL weiter, egal was im QR Code stand!
-                    // window.location.search ersetzt nur den "?..." Teil der URL
-                    window.location.url = "https://gtg.luda-vision.de/" + extractedId;
-                    //window.location.search = '?id=' + extractedId;
+                    // Wir bauen die URL neu, um Fehler bei falschen Parametern zu vermeiden
+                    window.location.href = "<?= ROOT_URL ?>" + extractedId;
                     return;
                 }
 
-                // 3. Fallback: Externe Dienste (Spotify/Deezer/YouTube Links)
-                // Nur wenn KEINE ID gefunden wurde und es NICHT unsere Domain ist
-                if (scannedData.includes('http') && !isMyDomain) {
+                // --- 2. EXTERNE DIENSTE (Spotify/Deezer/YouTube/Hitster) ---
+                // FIX: Wir prüfen jetzt auf "http" ODER "www." ODER "hitstergame"
+                const isExternalLink = 
+                    scannedData.includes('http') || 
+                    scannedData.includes('www.') || 
+                    scannedData.includes('hitstergame.com') ||
+                    scannedData.includes('spotify.com') ||
+                    scannedData.includes('deezer.com') ||
+                    scannedData.includes('youtu');
+
+                if (isExternalLink && !isMyDomain) {
                     stopScanning();
+                    // Link ins Formular packen und absenden
                     document.querySelector('input[name="url"]').value = scannedData;
                     document.getElementById('urlForm').submit();
                     return;
                 }
-                // --- LOGIK ENDE ---
             }
         }
         requestAnimationFrame(tick);
     }
-
+    
     function stopScanning() {
         scanActive = false;
         const overlay = document.getElementById('qr-overlay');

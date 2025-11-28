@@ -733,3 +733,205 @@ button:hover {
     min-height: 350px;       /* Optional: Eine Mindesthöhe für alle Karten */
     justify-content: space-between; /* Verteilt den Inhalt */
 }
+
+/* =========================================
+   MODERNE AUTH PAGES (Login / Register)
+   ========================================= */
+
+/* Zentriert die Box vertikal und horizontal */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Nimmt fast die ganze Höhe ein */
+    padding: 20px;
+    width: 100%;
+}
+
+/* Die Karte selbst */
+.auth-card {
+    background-color: #1c1c2b; /* Helleres Dunkelblau */
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Tiefer Schatten */
+    width: 100%;
+    max-width: 400px; /* Nicht zu breit auf Desktop */
+    text-align: center;
+    border: 1px solid #333;
+}
+
+/* Das Logo oben */
+.auth-logo {
+    width: 1000px;
+    margin-bottom: 20px;
+}
+
+/* Überschriften */
+.auth-title {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.auth-subtitle {
+    color: #888;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+/* Formular Layout */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Inputs modernisieren */
+.auth-input {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #141522; /* Sehr dunkel */
+    border: 2px solid #333;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-family: 'Maison Neue Bold', sans-serif;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Wichtig damit Padding nicht die Breite sprengt */
+}
+
+.auth-input:focus {
+    border-color: #7da7ff; /* Dein Akzent-Blau */
+    box-shadow: 0 0 0 3px rgba(125, 167, 255, 0.2);
+}
+
+/* Button volle Breite */
+.auth-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+/* Links unten */
+.auth-footer {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: #aaa;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-footer a {
+    color: #7da7ff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Alerts schön machen */
+.auth-alert {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    text-align: left;
+}
+.auth-alert.error {
+    background-color: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+}
+.auth-alert.success {
+    background-color: rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+    border: 1px solid #00ff88;
+}
+
+/* =========================================
+   NEON INPUT GLOW EFFECTS
+   ========================================= */
+
+/* Basis-Transition für weiches Einblenden */
+.auth-input, 
+.input-field {
+    transition: all 0.3s ease-in-out;
+}
+
+/* VARIANTE 1: Das "Cyberpunk Blau" (Passend zu deinem Standard-Design)
+   Dieser Effekt greift beim Drüberfahren (Hover) und Reinklicken (Focus)
+*/
+.auth-input:hover, 
+.input-field:hover {
+    border-color: #ff2bc2;
+    box-shadow: 0 0 8px rgba(255, 43, 194, 0.5); /* Leichter Schein */
+}
+
+
+
+/* VARIANTE 2: Wenn du es wie den "Spielen"-Button (Pink) willst
+   (Einfach die obere Variante auskommentieren und diese nutzen, wenn bevorzugt)
+*/
+
+.auth-input:focus, .input-field:focus {
+    border-color: #ff2bc2;
+    box-shadow: 
+        0 0 5px  #ff2bc2,
+        0 0 15px rgba(255, 43, 194, 0.6),
+        0 0 30px rgba(255, 43, 194, 0.2);
+}
+
+
+/* BONUS: Placeholder Text beim Tippen auch leuchten lassen 
+*/
+.auth-input:focus::placeholder,
+.input-field:focus::placeholder {
+    color: #acc6ff;
+    text-shadow: 0 0 5px rgba(255, 43, 194, 0.5);
+    opacity: 0.7;
+}
+
+/* =========================================
+   NEON BUTTON EFFECTS
+   ========================================= */
+
+/* Basis-Transition */
+.auth-button, 
+.button {
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden; /* Für saubere Kanten */
+}
+
+/* Hover & Focus Effekt (Blau) */
+.auth-button:hover,
+.auth-button:focus,
+.button:hover {
+    border-color: #7da7ff;       /* Rand wird hellblau */
+    background-color: #1e2235;   /* Hintergrund wird etwas heller */
+    color: #ffffff;
+    outline: none;
+    cursor: pointer;
+
+    /* Der Neon-Schein (identisch zu den Inputs) */
+    box-shadow: 
+        0 0 5px  rgb(125, 167, 255),           /* Harter Kern */
+        0 0 20px rgba(255, 43, 194, 0.6), /* Weiter Schein */
+        0 0 40px rgba(255, 43, 194, 0.2); /* Äußerer Schein */
+        
+    /* BONUS: Damit auch der Text leuchtet */
+    text-shadow: 0 0 8px rgba(255, 43, 194, 0.8);
+}
+
+/* Klick-Effekt (Active) - Wirkt wie "Drücken" */
+.auth-button:active,
+.button:active {
+    transform: scale(0.98);      /* Minimal kleiner werden */
+    box-shadow: 0 0 10px rgba(125, 167, 255, 0.8); /* Schein wird kleiner/enger */
+}
