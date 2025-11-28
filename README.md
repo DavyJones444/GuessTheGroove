@@ -18,7 +18,6 @@ First install XAMPP.
 Copy everything from the zip in the htdocs folder.
 Start mysql(PHPmyAdmin) and apache
 Open PHPmyAdmin and import the guess-the-groove.db found in the database folder.
-For simplification of installation .env will be available. But the keys and login information are only to be used with the website.
 
 ## Problems?
 If you encounter Issues please first try the following:
