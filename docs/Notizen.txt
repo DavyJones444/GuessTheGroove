@@ -7,3 +7,45 @@ $user = 'myuser'; // default: root | for homeserver only: myuser
 $pass = 'mypass'; // default: '' | for homeserver only: mypass
 
 Standardlink für Mails anpassen
+
+Repsonsive Design
+Akzeptanztest
+Umfrage tests
+
+Sauberes Auswerten
+
+Anmerkungen:
+
+
+1) Kapitel 1
+- eher mit Motivation beginnen
+
+2) Kapitel 2
+- aktuell nicht nur theoretische Grundlagen
+
+3) Kapitel 7
+a) Mir wäre lieber, wenn das Kapitel in 2 Kapitel
+unterteilt wird - "Ergebnisse und Diskussion"
+und "Ausblick"
+
+b) "Potentielle Weiterentwicklungen" ist nicht gleich
+Ausblick, da Ihr Titel nur die vorwärtsgerichtete Sicht hat.
+In den Ausblick würde ich aber auch Sachen sehen, die
+mit der Verbesserung und klareren Fundierung des aktuellen
+Standes zu tun haben.
+
+4) zum Zeitplan
+Schauen Sie darauf, dass Sie während des gesamten
+Zusammenschreibens schon die jeweils passende Literatur
+einbinden. Im Nachhinein ist es meist sehr schwer.
+
+Welcher Nutzerkreis?
+Handy?
+Web?
+Altersgruppe?
+Erweiterbarer Prototyp:
+Tests -> Feedback einbauen -> Tests -> ...
+Agiles Programming mäßig
+Warum? Was?
+
+Nächste Woche Freitag etwas zusammenschreiben.
