@@ -1,4 +1,4 @@
-# hitster-customs
+# Guess The Groove
 Hitster ist ein erfolgreiches Musikquiz für Zuhause.
 Höre einen Song und versuche dann ihn in deinen Zeitstrahl einzusortieren.
 Wer zuerst einen Zeitstrahl aus 10 Songs hat, hat gewonnen.
@@ -8,6 +8,21 @@ Zwar kann man seine Sammlung mit Erweiterungen füllen,
 um aber auch andere Songs verwenden zu können, gibt es Hitster Customs.
 
 Hier kann man eigene Karten erstellen, sie runterladen, drucken, ausschneiden und los geht der Spaß!
+
+## Installation (for Windows)
+If enough:
+Please use the official Website https://gtg.luda-vision.de/ since newer updates and bug fixes will be found there. To test the Website, I'd be happy if you could choose to use that.
+If you want the pain of the installation please continue reading this chapter:
+
+First install XAMPP.
+Copy everything from the zip in the htdocs folder.
+Start mysql(PHPmyAdmin) and apache
+Open PHPmyAdmin and import the guess-the-groove.db found in the database folder.
+For simplification of installation .env will be available. But the keys and login information are only to be used with the website.
+
+## Problems?
+If you encounter Issues please first try the following:
+Check if the apache configuration in xampp is like the one found in /xampp conf/apache/
 
 ## Functions
 - [ ] Accountmanagement

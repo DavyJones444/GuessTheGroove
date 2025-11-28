@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Optional: CORS Headers (falls du sie brauchst)
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+    </IfModule>
+
+    # DIE MAGISCHE LOGIK:
+    # 1. Ist es KEINE existierende Datei? (!-f)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    
+    # 2. Ist es KEIN existierender Ordner? (!-d)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # 3. DANN leite an index.php weiter
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
