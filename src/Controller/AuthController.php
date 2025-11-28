@@ -62,7 +62,7 @@ class AuthController extends BaseController {
                     $this->userRepo->createLoginCode($user['id'], $code);
                     
                     $mailer = new MailerService();
-                    $mailer->sendMail($email, "Dein Login-Code", "Code: $code");
+                    $mailer->sendMail($email, "Dein Login-Code", "Code: $code","Code: $code");
                     
                     // Wir merken uns die Email für Schritt 2 in der Session oder View
                     $this->render('auth/login_code.view.php', ['title' => 'Code eingeben', 'step' => 2, 'email' => $email]);
@@ -139,7 +139,7 @@ class AuthController extends BaseController {
                 $code = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
                 $this->userRepo->createLoginCode($user['id'], $code);
                 
-                (new MailerService())->sendMail($email, "Passwort zurücksetzen", "Dein Code: $code");
+                (new MailerService())->sendMail($email, "Passwort zurücksetzen", "Dein Code: $code", "Dein Code: $code");
                 $message = "Code gesendet.";
                 // Weiterleitung zum Reset-Formular
                 header("Location: /reset-password?email=" . urlencode($email));
