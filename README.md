@@ -54,7 +54,8 @@ Check if the apache configuration in xampp is like the one found in /xampp conf/
 - Deezer, Spotify, YouTube via API
 - PHPmailer
 - yt-dl
-- Code in PHP, HTML und CSS
+- phpcompose
+- Code in PHP, HTML, CSS und JS
 
 Optional:
 - Hitster anschreiben wegen App Kompatibilität.
