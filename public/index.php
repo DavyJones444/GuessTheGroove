@@ -261,6 +261,17 @@ switch ($path) {
         // Template laden und direkt anzeigen
         require __DIR__ . '/../templates/mail/default.php';
         break;
+
+    // ADMIN BEREICH
+    case '/admin':
+        require_once __DIR__ . '/../src/Controller/AdminController.php';
+        (new AdminController($pdo))->index();
+        break;
+
+    case '/admin/store':
+        require_once __DIR__ . '/../src/Controller/AdminController.php';
+        (new AdminController($pdo))->store();
+        break;
     // ----------------------------------------------------
     // 4. Spezialfall: QR-Code Kurz-URLs (/123)
     // ----------------------------------------------------
