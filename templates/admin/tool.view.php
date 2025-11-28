@@ -40,7 +40,7 @@
                     <th style="padding: 10px; border-bottom: 2px solid #333;">ID</th>
                     <th style="padding: 10px; border-bottom: 2px solid #333;">Hitster-ID</th>
                     <th style="padding: 10px; border-bottom: 2px solid #333;">Song-URL</th>
-                </tr>
+                    <th style="padding: 10px; border-bottom: 2px solid #333; text-align: right;">Aktion</th> </tr>
             </thead>
             <tbody>
                 <?php foreach ($viewData['mappings'] as $row): ?>
@@ -50,6 +50,14 @@
                         <td style="padding: 10px;">
                             <a href="<?= htmlspecialchars($row['song_url']) ?>" target="_blank" style="word-break: break-all;">
                                 <?= htmlspecialchars($row['song_url']) ?>
+                            </a>
+                        </td>
+                        <td style="padding: 10px; text-align: right;">
+                            <a href="/admin/delete?id=<?= $row['id'] ?>" 
+                               onclick="return confirm('Willst du die Zuordnung für <?= htmlspecialchars($row['hitster_id']) ?> wirklich löschen?');"
+                               title="Löschen"
+                               style="text-decoration: none;">
+                                <img src="<?= ROOT_URL ?>assets/icons/delete.svg" alt="Löschen" style="width: 20px; vertical-align: middle;">
                             </a>
                         </td>
                     </tr>

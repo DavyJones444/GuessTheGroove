@@ -14,8 +14,13 @@ class HitsterRepository {
     }
 
     public function getAllMappings() {
-        $stmt = $this->pdo->query("SELECT * FROM hitster_mapping ORDER BY id DESC");
+        $stmt = $this->pdo->query("SELECT * FROM hitster_mapping ORDER BY hitster_id ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteMapping($id) {
+        $stmt = $this->pdo->prepare("DELETE FROM hitster_mapping WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 
     public function findByHitsterId($hitsterId) {

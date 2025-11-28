@@ -272,6 +272,11 @@ switch ($path) {
         require_once __DIR__ . '/../src/Controller/AdminController.php';
         (new AdminController($pdo))->store();
         break;
+
+    case '/admin/delete':
+        require_once __DIR__ . '/../src/Controller/AdminController.php';
+        (new AdminController($pdo))->delete();
+        break;
     // ----------------------------------------------------
     // 4. Spezialfall: QR-Code Kurz-URLs (/123)
     // ----------------------------------------------------

@@ -48,4 +48,21 @@ class AdminController extends BaseController {
         header("Location: /admin");
         exit;
     }
+
+    public function delete() {
+        AdminMiddleware::protect(); // WICHTIG: Nur Admins dürfen löschen
+
+        $id = $_GET['id'] ?? null;
+
+        if ($id) {
+            $repo = new HitsterRepository($this->pdo);
+            $repo->deleteMapping($id);
+            $_SESSION['message'] = "Eintrag gelöscht.";
+        } else {
+            $_SESSION['error'] = "Keine ID übergeben.";
+        }
+
+        header("Location: /admin");
+        exit;
+    }
 }
